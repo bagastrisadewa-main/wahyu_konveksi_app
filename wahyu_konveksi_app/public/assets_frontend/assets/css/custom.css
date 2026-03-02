@@ -1,0 +1,301 @@
+.footer-middle {
+    padding-top: 2.25rem;
+    padding-bottom: 2.25rem;
+}
+.text-right {
+    text-align: right;
+}
+.pt-90 {
+    padding-top: 90px !important;
+}
+.my-account__address-list {
+    display: flex;
+    gap: 1.625rem;
+}
+
+.form-floating > .form-control,
+.form-floating > .form-select {
+    height: 48px;
+}
+
+#header {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.logo__image {
+    max-width: 220px;
+}
+/* Biar logo mobile center */
+.header-mobile .logo__image {
+    max-width: 160px;
+    height: auto;
+}
+
+/* Biar hamburger & search rata */
+.header-mobile .header-tools__item svg,
+.header-mobile .mobile-nav-activator svg {
+    fill: currentColor;
+}
+
+/* Icon hamburger & search di header mobile */
+.header-mobile .mobile-nav-activator svg,
+.header-mobile .header-tools__item svg {
+    stroke: #000; /* kalau pakai stroke */
+    fill: #000; /* kalau pakai fill */
+    color: #000; /* jaga-jaga */
+}
+
+/* pastikan icon burger & search di mobile hitam */
+.header-mobile .mobile-nav-activator svg,
+.header-mobile .header-tools__item svg,
+.header-mobile .mobile-nav-activator,
+.header-mobile .header-tools__item {
+    color: #000 !important;
+    fill: #000 !important;
+    stroke: #000 !important;
+}
+
+.icon {
+    fill: currentColor; /*icon svg ikut warna text */
+    vertical-align: middle;
+}
+
+/* =========================
+   FIX LOGIN DESKTOP CENTER
+   ========================= */
+.login-register {
+    width: 100% !important;
+    max-width: none !important;
+    padding-bottom: 40px;
+}
+
+@media (min-width: 992px) {
+    .login-page-wrapper {
+        min-height: calc(100vh - 140px);
+        display: flex;
+        align-items: flex-start; /* mulai dari atas, tidak center vertikal */
+        justify-content: center;
+        padding-top: 100px; /* jarak dari header */
+    }
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+/* spacer setinggi header, transparan */
+.header-spacer {
+    height: 2px; /* tinggi header, sesuaikan dengan tinggi header sebenarnya */
+    background-color: transparent;
+    width: 100%;
+}
+
+/* === ICON PROFIL HEADER === */
+.header-user-icon {
+    width: 25px;
+    height: 25px;
+
+    display: flex; /* penting */
+    align-items: center;
+    justify-content: center;
+
+    line-height: 1; /* 🔑 cegah turun */
+    vertical-align: middle; /* 🔑 sejajar icon lain */
+
+    cursor: pointer;
+}
+
+.header-user-icon svg {
+    width: 25px;
+    height: 25px;
+    display: block; /* 🔑 samakan behaviour img */
+}
+
+.header-user-icon img {
+    width: 25px; /* samakan visual svg */
+    height: 25px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block; /* 🔑 cegah baseline offset */
+}
+
+/* Footer mobile user */
+.footer-mobile-user-avatar {
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 2px;
+}
+
+.footer-mobile-user-name {
+    font-size: 11px;
+    line-height: 1;
+    max-width: 70px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===== Footer Mobile Text ===== */
+.footer-mobile__link span,
+.footer-mobile-user-name {
+    font-size: 14px; /* samakan dengan menu lain */
+    line-height: 1.2;
+    margin-top: 4px;
+    font-weight: 400;
+    color: #333;
+}
+
+.footer-mobile-user-avatar {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* =========================
+   Button Penawaran Khusus
+   ========================= */
+.btn-penawaran-khusus {
+    background-color: #000;
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.btn-penawaran-khusus:hover {
+    background-color: #111;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Ratakan semua kolom footer secara vertikal */
+.footer-top,
+.footer-top .row {
+    display: flex;
+    align-items: center;
+}
+
+/* Khusus kolom Penawaran Khusus */
+.btn-penawaran-khusus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* Hilangkan margin atas default */
+.footer-column {
+    margin-top: 30 !important;
+}
+
+/* Header spacer */
+.header-spacer {
+    height: 90px;
+}
+
+@media (max-width: 768px) {
+    .header-spacer {
+        height: 70px;
+    }
+}
+
+/* Profile card */
+.profile-card {
+    background: #fff;
+}
+
+/* ================== Dashboard Custom Styles ================== */
+
+/* Container utama section */
+.main-content .section {
+    padding: 20px 15px;
+    background-color: #f8f9fa; /* soft light background */
+    border-radius: 1rem;
+}
+
+/* ================= SUMMARY CARDS ================= */
+.card.rounded-10 {
+    border-radius: 2rem !important; /* lebih bulat dari default */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card.rounded-10:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card.rounded-5 {
+    border-radius: 1rem !important;
+}
+
+.card .card-body h6 {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #ffffffcc;
+}
+
+.card .card-body h3,
+.card .card-body h4 {
+    font-weight: 700;
+}
+
+/* ================= CHART CARDS ================= */
+.card.shadow {
+    border-radius: 1.25rem;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card.shadow:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* ================= TABLE STYLING ================= */
+.table {
+    font-size: 0.875rem;
+}
+
+.table thead th {
+    background-color: #f1f3f5;
+    font-weight: 600;
+}
+
+.table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .col-md-2 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .card.rounded-10 {
+        margin-bottom: 1rem;
+    }
+}

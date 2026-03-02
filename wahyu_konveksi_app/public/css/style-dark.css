@@ -1,0 +1,544 @@
+/* === STISLA DARK MODE - style-dark.css === */
+
+body.dark-mode {
+  background-color: #1f1f2e;
+  color: #ffffff;
+}
+
+body.dark-mode .navbar,
+body.dark-mode .main-sidebar,
+body.dark-mode .main-sidebar .sidebar-menu,
+body.dark-mode .dropdown-menu,
+body.dark-mode .card {
+  background-color: #2b2b3d !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .navbar .nav-link,
+body.dark-mode .main-sidebar .sidebar-menu li a,
+body.dark-mode .dropdown-item,
+body.dark-mode .text-dark,
+body.dark-mode .text-muted {
+  color: #ffffff !important;
+}
+
+body.dark-mode .card-header,
+body.dark-mode .card-body,
+body.dark-mode .card-footer {
+  background-color: #2b2b3d !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .form-control,
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+  background-color: #1e1e2e !important;
+  color: #ffffff !important;
+  border-color: #444 !important;
+}
+
+body.dark-mode .btn-light {
+  background-color: #444 !important;
+  color: #fff !important;
+  border-color: #666 !important;
+}
+
+body.dark-mode table {
+  background-color: #1e1e2e !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode thead {
+  background-color: #333 !important;
+  color: #ffffff;
+}
+
+body.dark-mode .search-element input {
+  background-color: #2a2a3d !important;
+  color: #fff !important;
+}
+
+body.dark-mode .search-result,
+body.dark-mode .dropdown-list-content {
+  background-color: #333 !important;
+}
+
+body.dark-mode .search-item,
+body.dark-mode .dropdown-item {
+  color: #ffffff !important;
+}
+
+body.dark-mode .btn,
+body.dark-mode .btn-primary,
+body.dark-mode .btn-secondary {
+  border-color: #555;
+}
+
+body.dark-mode .bg-white {
+  background-color: #2b2b3d !important;
+}
+
+body.dark-mode .border {
+  border-color: #555 !important;
+}
+/* ==== FIX: Header card yang masih biru terang ==== */
+body.dark-mode .section-header {
+    background-color: #2b2b3d !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid #444;
+}
+
+/* ==== FIX: Sidebar menu aktif jadi putih ==== */
+body.dark-mode .sidebar-menu .nav-item.active > a {
+    background-color: #3a3a4d !important;
+    color: #ffffff !important;
+}
+
+/* ==== FIX: Teks 'STISLA' di logo sidebar ==== */
+body.dark-mode .sidebar-brand a,
+body.dark-mode .sidebar-brand.sidebar-brand-sm a {
+    color: #ffffff !important;
+}
+
+/* ==== Tambahan opsional: ganti warna hover sidebar ==== */
+body.dark-mode .sidebar-menu li a:hover {
+    background-color: #444 !important;
+    color: #ffffff !important;
+}
+
+
+/* ==== HEADER CARD: hilangkan warna biru ==== */
+body.dark-mode .section-header {
+    background-color: #2b2b3d !important;
+    color: #d0d0d0 !important;
+    border-bottom: 1px solid #444 !important;
+}
+
+/* ==== JUDUL HALAMAN (seperti: Yans POS) ==== */
+body.dark-mode .section-title {
+    color: #d0d0d0 !important;
+}
+
+/* ==== SIDEBAR SUBMENU yang AKTIF ==== */
+body.dark-mode .sidebar-menu .dropdown-menu li.active > a,
+body.dark-mode .sidebar-menu .dropdown-menu li a:hover {
+    background-color: #3a3a4d !important;
+    color: #ffffff !important;
+}
+
+/* ==== PERBAIKI BACKGROUND SIDEBAR saat dropdown terbuka ==== */
+body.dark-mode .sidebar-menu .dropdown-menu {
+    background-color: #2e2e3f !important;
+}
+
+/* ==== Sidebar aktif utama ==== */
+body.dark-mode .sidebar-menu .nav-item.dropdown.active > a {
+    background-color: #3a3a4d !important;
+    color: #ffffff !important;
+}
+
+/* ==== Sidebar border separator agar tidak kelihatan patah ==== */
+body.dark-mode .main-sidebar {
+    border-right: 1px solid #444 !important;
+}
+
+/* === 1. Dropdown sidebar aktif tetap dark === */
+body.dark-mode .sidebar-menu .nav-item.dropdown.active .dropdown-menu {
+    background-color: #2e2e3f !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .sidebar-menu .nav-item.dropdown .dropdown-menu li a {
+    color: #ccc !important;
+}
+
+body.dark-mode .sidebar-menu .nav-item.dropdown .dropdown-menu li a:hover,
+body.dark-mode .sidebar-menu .nav-item.dropdown .dropdown-menu li.active > a {
+    background-color: #3a3a4d !important;
+    color: #fff !important;
+}
+
+/* === 2. Judul halaman (Yans POS) jadi abu terang, tidak gelap === */
+body.dark-mode .section-title {
+    color: #eeeeee !important;
+}
+
+/* === 3. Perbaiki garis biru bawah header section jika masih ada === */
+body.dark-mode .section-header {
+    background-color: #2b2b3d !important;
+    border-bottom: 1px solid #444 !important;
+}
+
+/* === FIX 1: Dropdown menu sidebar (ul.dropdown-menu) tetap gelap === */
+body.dark-mode ul.dropdown-menu {
+  background-color: #2e2e3f !important;
+  border: none !important;
+}
+
+body.dark-mode ul.dropdown-menu li a.nav-link {
+  color: #ccc !important;
+}
+
+body.dark-mode ul.dropdown-menu li a.nav-link:hover {
+  background-color: #3a3a4d !important;
+  color: #fff !important;
+}
+
+/* === FIX 2: Background biru pada navbar-bg jadi gelap === */
+body.dark-mode .navbar-bg {
+  background-color: #2a2a3a !important;
+}
+
+/* === PERBAIKAN: Judul halaman di header === */
+body.dark-mode .section-header h1,
+body.dark-mode .section-header h2,
+body.dark-mode .section-header h3,
+body.dark-mode .section-header h4 {
+  color: #ffffff !important;
+}
+
+/* === PERBAIKAN: Dropdown menu sidebar UL dan LI tetap gelap === */
+body.dark-mode ul.dropdown-menu {
+  background-color: #2e2e3f !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body.dark-mode ul.dropdown-menu li {
+  background-color: transparent !important;
+}
+
+body.dark-mode ul.dropdown-menu li a.nav-link {
+  color: #ddd !important;
+}
+
+body.dark-mode ul.dropdown-menu li a.nav-link:hover,
+body.dark-mode ul.dropdown-menu li.active > a {
+  background-color: #3a3a4d !important;
+  color: #fff !important;
+}
+
+/* === Sidebar submenu nav-link background dan text default (tidak di-hover) === */
+body.dark-mode ul.dropdown-menu li a.nav-link {
+  background-color: #2e2e3f !important;
+  color: #ccc !important;
+}
+
+/* === PERBAIKAN: Navbar latar belakang biru === */
+body.dark-mode .navbar-bg {
+  background-color: #2a2a3a !important;
+}
+
+/* === Dropdown menu user (navbar) style saat dark mode === */
+body.dark-mode .dropdown-menu {
+  background-color: #2e2e3f !important;
+  border-color: #444 !important;
+}
+
+/* === Item dalam dropdown menu user (navbar) === */
+body.dark-mode .dropdown-menu .dropdown-item {
+  color: #ccc !important;
+}
+
+/* === Hover & fokus pada item dropdown === */
+body.dark-mode .dropdown-menu .dropdown-item:hover,
+body.dark-mode .dropdown-menu .dropdown-item:focus {
+  background-color: #3a3a4d !important;
+  color: #fff !important;
+}
+
+/* === Divider agar tetap terlihat === */
+body.dark-mode .dropdown-divider {
+  border-top: 1px solid #444;
+}
+
+/* === Warna khusus untuk logout text-danger saat hover === */
+body.dark-mode .dropdown-menu .dropdown-item.text-danger:hover {
+  background-color: #5c1e1e !important;
+  color: #fff !important;
+}
+
+/* === .dropdown-title (misalnya "Logged in 5 min ago") === */
+body.dark-mode .dropdown-menu .dropdown-title {
+  color: #fff !important;
+  background-color: transparent !important;
+  border-bottom: 1px solid #444;
+}
+
+/* === Search input di header === */
+body.dark-mode .search-element input.form-control {
+  background-color: #2e2e3f !important;
+  border: 1px solid #444 !important;
+  color: #eee !important;
+}
+
+/* === Tombol search di header (icon dan latar) === */
+body.dark-mode .search-element .btn {
+  background-color: #3a3a4d !important;
+  border: 1px solid #444 !important;
+  color: #fff !important;
+}
+
+/* === Icon search agar jadi putih (fas fa-search) === */
+body.dark-mode .search-element .btn i.fas {
+  color: #fff !important;
+}
+
+/* Sidebar kecil saat dark mode */
+body.dark-mode .sidebar-brand-sm {
+  background-color: #2e2e3f !important;
+}
+
+/* Link di dalam sidebar kecil */
+body.dark-mode .sidebar-brand-sm a {
+  background-color: transparent !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+/* Logo sidebar kecil (jika ingin latar belakang abu) */
+body.dark-mode .sidebar-brand-sm img {
+  background-color: transparent;
+  border-radius: 4px;
+}
+
+/* Warna latar sidebar */
+body.dark-mode .main-sidebar.sidebar-style-2 {
+  background-color: #1e1e2f;
+  color: #ddd;
+}
+
+/* Brand besar (Stisla) */
+body.dark-mode .sidebar-style-2 .sidebar-brand a {
+  color: #eee !important;
+}
+
+/* Brand kecil (St) */
+body.dark-mode .sidebar-style-2 .sidebar-brand.sidebar-brand-sm {
+  background-color: #1e1e2f;
+}
+body.dark-mode .sidebar-style-2 .sidebar-brand.sidebar-brand-sm a {
+  color: #eee !important;
+}
+
+/* Link menu utama */
+body.dark-mode .sidebar-style-2 .sidebar-menu li a {
+  color: #ccc;
+}
+
+/* Hover dan menu aktif */
+body.dark-mode .sidebar-style-2 .sidebar-menu li a:hover,
+body.dark-mode .sidebar-style-2 .sidebar-menu .active > a {
+  background-color: #2e2e42;
+  color: #fff;
+}
+
+/* Submenu dropdown */
+body.dark-mode .sidebar-style-2 .sidebar-menu .dropdown-menu {
+  background-color: #2a2a3c;
+}
+body.dark-mode .sidebar-style-2 .sidebar-menu .dropdown-menu li a {
+  color: #ccc;
+}
+body.dark-mode .sidebar-style-2 .sidebar-menu .dropdown-menu li a:hover {
+  background-color: #3b3b50;
+  color: #fff;
+}
+
+/* Header teks menu seperti "Dashboard", "Starter", dsb */
+body.dark-mode .sidebar-style-2 .sidebar-menu .menu-header {
+  color: #aaa;
+}
+
+
+body.dark-mode.sidebar-mini .main-sidebar:after {
+  background-color: #1e1e2f !important;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Deteksi jika mode gelap aktif (misal class .dark-mode ditambahkan ke body) */
+body.dark-mode .table {
+    color: #ffffff; /* Ubah warna teks */
+    background-color: #2d2d2d; /* Opsional: ubah warna background tabel */
+}
+
+body.dark-mode .table thead {
+    background-color: #3b3b3b;
+}
+
+body.dark-mode .table tbody tr {
+    background-color: #2d2d2d;
+}
+
+body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #2a2a2a; /* striping warna lebih gelap */
+}
+
+body.dark-mode .table th,
+body.dark-mode .table td {
+    color: #ffffff; /* pastikan teks tetap putih */
+    border-color: #444; /* batas antar kolom gelap */
+}
+
+
+/* Jika body memiliki class .dark-mode */
+body.dark-mode .pagination {
+    background-color: transparent; /* biar nggak putih */
+}
+
+body.dark-mode .pagination .page-item .page-link {
+    background-color: #111;      /* hitam */
+    color: #fff;                 /* teks putih */
+    border-color: #444;          /* garis tepi gelap */
+}
+
+body.dark-mode .pagination .page-item.active .page-link {
+    background-color: #444;      /* abu gelap untuk item aktif */
+    color: #fff;
+    border-color: #555;
+}
+
+body.dark-mode .pagination .page-item.disabled .page-link {
+    background-color: #111;
+    color: #777;
+    border-color: #333;
+}
+
+
+/* Aktif saat <body class="dark-mode"> */
+body.dark-mode label,
+body.dark-mode .form-label,
+body.dark-mode .input-group-text i {
+    color: #ffffff !important; /* label & icon jadi putih */
+}
+
+body.dark-mode input.form-control,
+body.dark-mode .input-group-text,
+body.dark-mode .form-control {
+    background-color: #111 !important;
+    color: #fff !important;
+    border: 1px solid #444;
+}
+
+body.dark-mode input.form-control::placeholder {
+    color: #aaa;
+}
+
+body.dark-mode .input-group-text {
+    background-color: #222;
+    border-color: #444;
+    color: #fff;
+}
+
+/* Error message text */
+body.dark-mode .invalid-feedback {
+    color: #ff6666;
+}
+
+/* Selectgroup (radio button roles) */
+body.dark-mode .selectgroup-button {
+    background-color: #1b1b1b;
+    color: #fff;
+    border-color: #555;
+}
+
+body.dark-mode .selectgroup-input:checked + .selectgroup-button {
+    background-color: #444;
+    color: #fff;
+    border-color: #666;
+}
+
+/* Card & card body dark */
+body.dark-mode .card,
+body.dark-mode .card-body {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+/* Section title & breadcrumb */
+body.dark-mode .section-header h1,
+body.dark-mode .breadcrumb-item a,
+body.dark-mode .breadcrumb-item {
+    color: #ffffff !important;
+}
+
+
+
+
+/* Email & Password input di dalam input-group */
+body.dark-mode .input-group input[type="email"],
+body.dark-mode .input-group input[type="password"] {
+    background-color: #111 !important;
+    color: #fff !important;
+    border: 1px solid #444 !important;
+}
+
+body.dark-mode .input-group input[type="email"]::placeholder,
+body.dark-mode .input-group input[type="password"]::placeholder {
+    color: #bbb !important;
+}
+
+body.dark-mode .input-group .input-group-text {
+    background-color: #222 !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode .input-group .input-group-prepend .input-group-text i {
+    color: #fff !important;
+}
+
+/* Untuk input email */
+body.dark-mode input[type="email"].form-control,
+body.dark-mode .input-group input[type="email"].form-control {
+    background-color: #111 !important;
+    color: #fff !important;
+    border: 1px solid #444 !important;
+}
+
+body.dark-mode input[type="email"].form-control::placeholder,
+body.dark-mode .input-group input[type="email"].form-control::placeholder {
+    color: #bbb !important;
+}
+
+/* Untuk input password */
+body.dark-mode input[type="password"].form-control,
+body.dark-mode .input-group input[type="password"].form-control {
+    background-color: #111 !important;
+    color: #fff !important;
+    border: 1px solid #444 !important;
+}
+
+body.dark-mode input[type="password"].form-control::placeholder,
+body.dark-mode .input-group input[type="password"].form-control::placeholder {
+    color: #bbb !important;
+}
+
+/* Untuk ikon dalam input-group */
+body.dark-mode .input-group-text {
+    background-color: #222 !important;
+    border-color: #444 !important;
+    color: #fff !important;
+}
+
+
+/* Autofill override (Chrome/Webkit) */
+body.dark-mode input:-webkit-autofill,
+body.dark-mode input:-webkit-autofill:focus,
+body.dark-mode input:-webkit-autofill:hover {
+    -webkit-box-shadow: 0 0 0px 1000px #111 inset !important;
+    -webkit-text-fill-color: #fff !important;
+    caret-color: #fff !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Fix untuk input password yang diisi manual dengan value */
+body.dark-mode input[type="password"].form-control {
+    background-color: #111 !important;
+    color: #fff !important;
+    border: 1px solid #444 !important;
+}
+

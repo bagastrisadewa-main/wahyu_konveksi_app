@@ -17,3 +17,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+wahyu_konveksi_app/storage
+wahyu_konveksi_app/public/storage

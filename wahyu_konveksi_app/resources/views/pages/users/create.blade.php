@@ -1,0 +1,146 @@
+@extends('layouts.app')
+
+@section('title', 'Advanced Forms')
+
+@push('style')
+    <!-- CSS Libraries -->
+    <link rel="stylesheet" href="{{ asset('library/bootstrap-daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ asset('library/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('library/select2/dist/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('library/selectric/public/selectric.css') }}">
+    <link rel="stylesheet" href="{{ asset('library/bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('library/bootstrap-tagsinput/dist/bootstrap-tagsinput.css') }}">
+@endpush
+
+@section('main')
+    <div class="main-content">
+        <section class="section">
+            <div class="section-header">
+                <h1>Add User</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
+                    <div class="breadcrumb-item"><a href="#">Forms</a></div>
+                    <div class="breadcrumb-item">Users</div>
+                </div>
+            </div>
+
+            <div class="section-body">
+                <div class="card">
+                    {{-- ✅ Tambahkan autocomplete="off" --}}
+                    <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+
+                    {{-- <form action="{{ route('user.store') }}" method="POST" autocomplete="off"> --}}
+                        @csrf
+
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text"
+                                    name="name"
+                                    class="form-control @error('name') is-invalid @enderror"
+                                    autocomplete="off">
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email"
+                                    name="email"
+                                    class="form-control @error('email') is-invalid @enderror"
+                                    autocomplete="off">
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label>Password</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="fas fa-lock"></i>
+                                        </div>
+                                    </div>
+                                    <input type="password"
+                                        name="password"
+                                        class="form-control @error('password') is-invalid @enderror"
+                                        autocomplete="new-password">
+                                </div>
+                                @error('password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- ✅ Konfirmasi password
+                            <div class="form-group">
+                                <label>Confirm Password</label>
+                                <input type="password"
+                                    name="password_confirmation"
+                                    class="form-control"
+                                    autocomplete="new-password">
+                            </div> --}}
+
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="number"
+                                    name="phone"
+                                    class="form-control"
+                                    autocomplete="off">
+                            </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Roles</label>
+                            <div class="selectgroup w-100">
+                                <label class="selectgroup-item">
+                                    <input type="radio" name="roles" value="admin" class="selectgroup-input" checked>
+                                    <span class="selectgroup-button">Admin</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="radio" name="roles" value="karyawan" class="selectgroup-input">
+                                    <span class="selectgroup-button">Karyawan</span>
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Photo</label>
+                            <div class="mb-3">
+                                <img id="image-preview" 
+                                   src="{{ asset('img/avatar/avatar-1.png') }}"
+                                    alt="Preview" 
+                                    class="img-thumbnail" width="120">
+                            </div>
+                            <input type="file" name="photo" class="form-control-file @error('photo') is-invalid @enderror" onchange="previewImage(event)">
+                            @error('photo')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+
+                        <div class="card-footer text-right">
+                            <a href="{{ route('user.index') }}" class="btn btn-secondary mr-2">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </a>
+                            <button class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+@endsection
+
+@push('scripts')
+
+<script>
+function previewImage(event) {
+    const output = document.getElementById('image-preview');
+    output.src = URL.createObjectURL(event.target.files[0]);
+}
+</script>
+@endpush
+
+
