@@ -113,9 +113,9 @@
             }
 
             // Hitung ulang saat halaman pertama kali dibuka
-            document.addEventListener('DOMContentLoaded', function () {
-                recalcCart();
-            });
+            // document.addEventListener('DOMContentLoaded', function () {
+            //     recalcCart();
+            // });
             </script>
 
 

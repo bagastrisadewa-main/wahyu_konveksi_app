@@ -34,7 +34,12 @@ class BerandaController extends Controller
                 ->take(8)
                 ->get();
 
-        return view('frontend.pages.beranda.beranda', compact('navigationMenus', 'sliders', 'about', 'categories','products'));
+            // ✅ tambahkan ini
+    $articles = Article::latest()->take(5)->get();
+
+    return view('frontend.pages.beranda.beranda', compact(
+        'navigationMenus', 'sliders', 'about', 'categories', 'products', 'articles'
+    ));
     }
 
         // ✅ Fungsi search kategori
