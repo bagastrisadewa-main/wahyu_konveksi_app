@@ -10,34 +10,34 @@ use App\Models\CartItem;
 
 class OrderHistoryController extends Controller
 {
-    public function index()
-    {
-        $customerId = Auth::guard('customer')->id();
+        public function index()
+        {
+            $customerId = Auth::guard('customer')->id();
 
-        $orders = Order::with(['statusData'])
-            ->where('customer_id', $customerId)
-            ->orderByDesc('created_at')
-            ->paginate(10);
+            $orders = Order::with(['items.product', 'items.processes'])
+                ->where('customer_id', $customerId)
+                ->orderByDesc('created_at')
+                ->paginate(10);
 
-        return view('frontend.orders.history', compact('orders'));
-    }
-
-    public function show(Order $order)
-    {
-        $customerId = Auth::guard('customer')->id();
-
-        if ($order->customer_id != $customerId) {
-            abort(403);
+            return view('frontend.orders.history', compact('orders'));
         }
 
-        $order->load([
-            'items.product',
-            'statusData'
-        ]);
+        public function show(Order $order)
+        {
+            $customerId = Auth::guard('customer')->id();
 
-        return view('frontend.orders.show', compact('order'));
-    }
+            if ($order->customer_id != $customerId) {
+                abort(403);
+            }
 
+            $order->load([
+                'items.product',
+                'items.options',
+                'items.processes',
+            ]);
+
+            return view('frontend.orders.show', compact('order'));
+        }
 
 
         public function reorder($orderId)

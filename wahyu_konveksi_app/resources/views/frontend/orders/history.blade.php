@@ -29,11 +29,18 @@
                         <td>{{ $order->order_code }}</td>
                         <td>{{ $order->created_at->format('d M Y H:i') }}</td>
                         <td>Rp {{ number_format($order->total_price) }}</td>
-                        <td>
-                            <span class="badge bg-{{ $order->statusData->color ?? 'secondary' }}">
-                                {{ $order->statusData->name ?? ucfirst($order->status) }}
-                            </span>
-                        </td>
+                            <td>
+                                @forelse($order->items as $item)
+                                    <div class="small mb-1">
+                                        <span class="text-muted">{{ $item->product->name ?? 'Item' }}:</span>
+                                        <span class="badge bg-{{ $item->process_color }}">
+                                            {{ $item->process_label }}
+                                        </span>
+                                    </div>
+                                @empty
+                                    <span class="badge bg-secondary">Belum diproses</span>
+                                @endforelse
+                            </td>
                         <td>
                             <a href="{{ route('frontend.orders.history.show', $order->id) }}"
                                class="btn btn-sm btn-dark">

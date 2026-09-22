@@ -64,5 +64,23 @@ class OrderItem extends Model
     }
 
 
+    // Proses terakhir dari tabel order_item_processes.
+// Pakai koleksi yang sudah di-eager load supaya tidak N+1.
+public function getCurrentProcessAttribute(): ?OrderItemProcess
+{
+    return $this->processes->sortByDesc('id')->first();
+}
+
+public function getProcessLabelAttribute(): string
+{
+    return $this->current_process?->process_name ?? 'Belum diproses';
+}
+
+public function getProcessColorAttribute(): string
+{
+    return $this->current_process?->status_color ?? 'secondary';
+}
+
+
 
 }

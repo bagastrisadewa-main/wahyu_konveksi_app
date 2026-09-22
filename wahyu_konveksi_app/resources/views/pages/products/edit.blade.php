@@ -166,16 +166,44 @@
 
 @push('scripts')
 <script>
+function showToast(messages, type = 'error') {
+    const list = Array.isArray(messages) ? messages : [messages];
+    if (window.iziToast) {
+        iziToast[type]({
+            title: type === 'error' ? 'Gagal' : 'Info',
+            message: list.join('<br>'),
+            position: 'topRight',
+            timeout: 6000
+        });
+    } else if (window.toastr) {
+        toastr[type](list.join('<br>'));
+    } else {
+        alert(list.join('\n'));
+    }
+}
+</script>
+
+@if ($errors->any())
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        showToast(@json($errors->all()));
+    });
+</script>
+@endif
+
+
+<script>
 document.addEventListener("DOMContentLoaded", function(){
 
+
+
     // FORMAT RUPIAH
-    function formatRupiah(input){
-        let value = input.value.replace(/\D/g,'');
-        input.value = new Intl.NumberFormat('id-ID').format(value);
+document.addEventListener('input', function(e){
+    if (e.target.matches('.rupiah')) {
+        const v = e.target.value.replace(/\D/g,'');
+        e.target.value = v ? new Intl.NumberFormat('id-ID').format(v) : '';
     }
-    document.querySelectorAll('.rupiah').forEach(el=>{
-        el.addEventListener('input', ()=>formatRupiah(el));
-    });
+});
 
     // PREVIEW GAMBAR
     const imagesInput = document.getElementById('imagesInput');
@@ -205,6 +233,42 @@ document.addEventListener("DOMContentLoaded", function(){
     const deletedOptionsInput = document.createElement('div');
     deletedOptionsInput.id = 'deletedOptionsContainer';
     form.appendChild(deletedOptionsInput);
+
+        // VALIDASI OPSI CUSTOM SEBELUM SUBMIT  ← pindah ke sini
+    form.addEventListener('submit', function(e){
+        const emptyRows = [];
+        let firstInvalid = null;
+
+        container.querySelectorAll('.option-row').forEach(row => {
+            const isExisting = !!row.querySelector('input[name$="[id]"]');
+            const nameEl  = row.querySelector('input[name$="[name]"]');
+            const labelEl = row.querySelector('input[name$="[label]"]');
+            const priceEl = row.querySelector('input[name$="[extra_price]"]');
+
+            [nameEl, labelEl, priceEl].forEach(el => el && el.classList.remove('is-invalid'));
+
+            if (isExisting) return;
+
+            const filled = [nameEl, labelEl, priceEl].some(el => el && el.value.trim() !== '');
+            if (!filled) { emptyRows.push(row); return; }
+
+           [nameEl, labelEl, priceEl].forEach(el => {
+                if (el && el.value.trim() === '') {
+                    el.classList.add('is-invalid');
+                    firstInvalid = firstInvalid || el;
+                }
+            });
+        });
+
+        if (firstInvalid) {
+            e.preventDefault();
+            showToast('Opsi custom belum lengkap: Nama Opsi, Label value, dan Harga wajib diisi.');
+            firstInvalid.focus();
+            return;
+        }
+
+        emptyRows.forEach(row => row.querySelectorAll('input, select').forEach(el => el.disabled = true));
+    });
 
     document.getElementById('addNewOption').addEventListener('click', function(){
         const div = document.createElement('div');
@@ -239,9 +303,7 @@ document.addEventListener("DOMContentLoaded", function(){
         container.appendChild(div);
         optionIndex++;
 
-        div.querySelectorAll('.rupiah').forEach(el=>{
-            el.addEventListener('input', ()=>formatRupiah(el));
-        });
+
     });
 
     // HAPUS OPSI

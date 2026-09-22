@@ -9,12 +9,12 @@
 
     <h3 class="mb-4">Detail Order {{ $order->order_code }}</h3>
 
-    <div class="mb-4">
+    {{-- <div class="mb-4">
         <strong>Status:</strong>
         <span class="badge bg-{{ $order->statusData->color ?? 'secondary' }}">
             {{ $order->statusData->name ?? ucfirst($order->status) }}
         </span>
-    </div>
+    </div> --}}
 
     {{-- ORDER ITEMS --}}
     @foreach($order->items as $item)
@@ -48,6 +48,26 @@
                     <h6 class="fw-bold mb-2">
                         {{ $product->name ?? '-' }}
                     </h6>
+
+                    @php $proc = $item->current_process; @endphp
+
+                    <div class="mb-2">
+                        <span class="small text-muted">Proses Produksi:</span>
+                        <span class="badge bg-{{ $item->process_color }}">
+                            {{ $item->process_label }}
+                        </span>
+
+                        @if($proc)
+                            <div class="small text-muted mt-1">
+                                {{ $proc->status_label }}
+                                @if($proc->completed_at)
+                                    • selesai {{ $proc->completed_at->format('d M Y H:i') }}
+                                @elseif($proc->started_at)
+                                    • sejak {{ $proc->started_at->format('d M Y H:i') }}
+                                @endif
+                            </div>
+                        @endif
+                    </div>
 
                     <div class="small text-muted mb-1">
                         Harga Satuan: Rp {{ number_format($item->price) }}

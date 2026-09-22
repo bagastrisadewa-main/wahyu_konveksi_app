@@ -67,6 +67,8 @@ public function store(Request $request)
         'options.*.values'=> 'nullable|array',
     ]);
 
+    $this->validateOptions($request);
+
     DB::transaction(function () use ($request) {
 
         // ===== Upload Images =====
@@ -162,6 +164,8 @@ public function update(Request $request, $id)
         'category_id' => 'required|exists:categories,id',
     ]);
 
+    $this->validateOptions($request);
+
     DB::transaction(function () use ($request, $product) {
 
         // ===== Images =====
@@ -190,57 +194,101 @@ public function update(Request $request, $id)
         if($request->filled('deleted_options')){
             ProductOption::whereIn('id', array_filter($request->deleted_options))->delete();
         }
+            // ===== Process Options =====
+            if ($request->options) {
+                $autoAll = $request->boolean('auto_select_all_custom');
 
-        // ===== Process Options =====
-        if ($request->options) {
-            foreach ($request->options as $oIndex => $opt) {
-                // update existing option jika ada id
-                if(!empty($opt['id'])){
-                    $option = $product->options()->find($opt['id']);
-                    if($option){
-                        $option->update([
-                            'name' => $opt['name'] ?? $option->name,
-                            'type' => $opt['type'] ?? $option->type,
-                            'is_required' => $request->boolean('auto_select_all_custom') ? 1 : ($opt['is_required'] ?? 0),
+                foreach ($request->options as $opt) {
+                    $option = null; // reset tiap iterasi
+
+                    if (!empty($opt['id'])) {
+                        // update opsi lama
+                        $option = $product->options()->find($opt['id']);
+                        if ($option) {
+                            $option->update([
+                                'name' => $opt['name'] ?? $option->name,
+                                'type' => $opt['type'] ?? $option->type,
+                                'is_required' => $autoAll ? 1 : ($opt['is_required'] ?? 0),
+                            ]);
+                        }
+                    } else {
+                        // opsi baru: baris kosong di-skip
+                        if (blank($opt['name'] ?? null)) continue;
+
+                        $option = $product->options()->create([
+                            'name' => $opt['name'],
+                            'type' => $opt['type'] ?? 'select',
+                            'is_required' => $autoAll ? 1 : ($opt['is_required'] ?? 0),
                         ]);
                     }
-                } else {
-                    // create new option
-                    $option = $product->options()->create([
-                        'name' => $opt['name'],
-                        'type' => $opt['type'] ?? 'select',
-                        'is_required' => $request->boolean('auto_select_all_custom') ? 1 : ($opt['is_required'] ?? 0),
-                    ]);
-                }
 
-                if(!empty($opt['values']) && isset($option)){
-                    foreach($opt['values'] as $vIndex => $val){
-                        if(!empty($val['id'])){
+                    if (!$option || empty($opt['values'])) continue;
+
+                    foreach ($opt['values'] as $val) {
+                        if (!empty($val['id'])) {
                             $value = $option->values()->find($val['id']);
-                            if($value){
+                            if ($value) {
                                 $value->update([
                                     'label' => $val['label'] ?? $value->label,
                                     'extra_price' => (int) preg_replace('/\D/', '', $val['extra_price'] ?? 0),
                                 ]);
                             }
-                        } else {
-                            if(!empty($val['label'])){
-                                $option->values()->create([
-                                    'label' => $val['label'],
-                                    'extra_price' => (int) preg_replace('/\D/', '', $val['extra_price'] ?? 0),
-                                ]);
-                            }
+                        } elseif (!empty($val['label'])) {
+                            $option->values()->create([
+                                'label' => $val['label'],
+                                'extra_price' => (int) preg_replace('/\D/', '', $val['extra_price'] ?? 0),
+                            ]);
                         }
                     }
                 }
             }
-        }
 
     });
 
     return redirect()->route('product.index')
         ->with('success', 'Produk berhasil diperbarui');
 }
+
+
+            private function validateOptions(Request $request): void
+            {
+                $errors = [];
+
+                foreach ($request->input('options', []) as $i => $opt) {
+                    $isExisting = !empty($opt['id']);
+                    $name = trim($opt['name'] ?? '');
+                    $values = collect($opt['values'] ?? []);
+
+                    // value yang sudah disentuh (label atau harga terisi)
+                    $touched = $values->filter(
+                        fn ($v) => filled($v['label'] ?? null) || filled($v['extra_price'] ?? null)
+                    );
+
+                    // baris kosong total → aman, akan di-skip
+                    if (!$isExisting && $name === '' && $touched->isEmpty()) continue;
+
+                    if (!$isExisting && $name === '') {
+                        $errors["options.$i.name"] = 'Nama opsi custom wajib diisi.';
+                    }
+
+                    if (!$isExisting && $touched->isEmpty()) {
+                        $errors["options.$i.values"] = "Opsi \"$name\" minimal punya 1 value (label dan harga).";
+                    }
+
+                    foreach ($touched as $vi => $v) {
+                        if (blank($v['label'] ?? null)) {
+                            $errors["options.$i.values.$vi.label"] = 'Label value wajib diisi.';
+                        }
+                        if (blank($v['extra_price'] ?? null)) {
+                            $errors["options.$i.values.$vi.extra_price"] = 'Harga tambahan wajib diisi (isi 0 jika gratis).';
+                        }
+                    }
+                }
+
+                if ($errors) {
+                    throw \Illuminate\Validation\ValidationException::withMessages($errors);
+                }
+            }
 
 
 
