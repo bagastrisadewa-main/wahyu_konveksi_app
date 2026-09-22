@@ -81,51 +81,60 @@ public function index(Request $request)
     // Update status order + proses item
     // =========================
 
-public function saveOrderUpdates(Request $request, $orderId)
-{
-    $order = Order::with('items.processes')->findOrFail($orderId);
+        public function saveOrderUpdates(Request $request, $orderId)
+        {
+            $order = Order::with('items.processes')->findOrFail($orderId);
 
-    // Ambil data master status
-    $masterStatuses = \App\Models\OrderStatus::pluck('slug','slug'); // ['draft'=>'draft','selesai'=>'selesai',...]
+            // Ambil data master status
+            $masterStatuses = \App\Models\OrderStatus::pluck('slug','slug'); // ['draft'=>'draft','selesai'=>'selesai',...]
 
-    // Update status order
-    $orderStatus = $request->status;
-    $order->status = $orderStatus;
-    $order->save();
+            // Update status order
+            $orderStatus = $request->status;
+            $order->status = $orderStatus;
+            $order->save();
 
-    // Status untuk proses item
-    $itemProcessStatus = ($orderStatus === 'selesai') ? 'completed' : 'processing';
+            // Status untuk proses item
+            $itemProcessStatus = ($orderStatus === 'selesai') ? 'completed' : 'processing';
 
-    // Update setiap item
-    if ($request->filled('items')) {
-        foreach ($request->items as $itemId => $processName) {
-            $item = \App\Models\OrderItem::find($itemId);
-            if (!$item) continue;
+            // Update setiap item
+            if ($request->filled('items')) {
+                foreach ($request->items as $itemId => $processName) {
+                    $item = \App\Models\OrderItem::find($itemId);
+                    if (!$item) continue;
 
-            $last = $item->processes()->latest('id')->first();
+                    $last = $item->processes()->latest('id')->first();
 
-            // Buat record baru kalau belum ada atau proses berbeda
-            if (!$last || $last->process !== $processName) {
-                $item->processes()->create([
-                    'process'      => $processName,       // nama proses
-                    'status'       => $itemProcessStatus, // ambil dari order status
-                    'started_at'   => now(),
-                    'completed_at' => $itemProcessStatus === 'completed' ? now() : null
-                ]);
-            } else {
-                // Kalau sama tapi status order sudah selesai, update completed_at
-                if ($itemProcessStatus === 'completed' && $last->status !== 'completed') {
-                    $last->update([
-                        'status'       => 'completed',
-                        'completed_at' => now()
-                    ]);
+                    // Buat record baru kalau belum ada atau proses berbeda
+                    if (!$last || $last->process !== $processName) {
+
+                        // Tutup proses sebelumnya dulu sebelum bikin yang baru
+                        if ($last && $last->status !== 'completed') {
+                            $last->update([
+                                'status'       => 'completed',
+                                'completed_at' => now()
+                            ]);
+                        }
+
+                        $item->processes()->create([
+                            'process'      => $processName,       // nama proses
+                            'status'       => $itemProcessStatus, // ambil dari order status
+                            'started_at'   => now(),
+                            'completed_at' => $itemProcessStatus === 'completed' ? now() : null
+                        ]);
+                    } else {
+                        // Kalau sama tapi status order sudah selesai, update completed_at
+                        if ($itemProcessStatus === 'completed' && $last->status !== 'completed') {
+                            $last->update([
+                                'status'       => 'completed',
+                                'completed_at' => now()
+                            ]);
+                        }
+                    }
                 }
             }
-        }
-    }
 
-    return response()->json(['success' => true]);
-}
+            return response()->json(['success' => true]);
+        }
 
 
     //     public function saveOrderUpdates(Request $request, $orderId)
