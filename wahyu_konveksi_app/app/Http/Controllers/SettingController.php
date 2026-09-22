@@ -29,6 +29,11 @@ public function update(Request $request)
         'theme' => 'nullable|in:light,dark',
         'store_logo' => 'nullable|image|max:2048',
         'store_logo_alt' => 'nullable|image|max:2048',
+
+            // 🔹 Rekening Owner
+    'bank_name' => 'nullable|string|max:100',
+    'bank_account_number' => 'nullable|string|max:50',
+    'bank_account_holder' => 'nullable|string|max:100',
     ]);
 
     try {
@@ -39,6 +44,11 @@ public function update(Request $request)
         Setting::setValue('store_instagram', $validated['store_instagram']);
         Setting::setValue('store_tiktok', $validated['store_tiktok']);
         Setting::setValue('theme', $validated['theme'] ?? 'light');
+
+        // 🔹 Rekening Owner
+        Setting::setValue('bank_name', $validated['bank_name'] ?? null);
+        Setting::setValue('bank_account_number', $validated['bank_account_number'] ?? null);
+        Setting::setValue('bank_account_holder', $validated['bank_account_holder'] ?? null);
 
         // ✅ Upload logo utama
         if ($request->hasFile('store_logo')) {

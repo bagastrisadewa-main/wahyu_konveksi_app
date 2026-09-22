@@ -56,8 +56,37 @@
                                    value="{{ $settings['store_phone'] ?? '' }}">
                             <small class="text-muted">Hanya angka. Contoh: <code>628123456789</code></small>
                         </div>
-                    </div>
+
+                         </div>
                 </div>
+
+                        {{-- 🔹 Rekening Owner --}}
+                        <div class="card mb-4">
+                            <div class="card-header"><h4>Rekening Pembayaran</h4></div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Nama Bank</label>
+                                    <input type="text" name="bank_name" class="form-control"
+                                        placeholder="Contoh: Mandiri, BCA"
+                                        value="{{ $settings['bank_name'] ?? '' }}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Nomor Rekening</label>
+                                    <input type="text" name="bank_account_number" class="form-control"
+                                        placeholder="Contoh: 0754343"
+                                        value="{{ $settings['bank_account_number'] ?? '' }}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Nama Pemilik Rekening</label>
+                                    <input type="text" name="bank_account_holder" class="form-control"
+                                        placeholder="Contoh: Wahyu"
+                                        value="{{ $settings['bank_account_holder'] ?? '' }}">
+                                </div>
+                            </div>
+                        </div>
+                   
 
                 {{-- 🔹 Media Sosial --}}
                 <div class="card mb-4">

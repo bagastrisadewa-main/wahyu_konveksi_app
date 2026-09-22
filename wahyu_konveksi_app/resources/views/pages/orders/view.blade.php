@@ -20,30 +20,109 @@
         <div class="section-body">
             @include('layouts.alert')
 
+         
             {{-- Informasi Order --}}
-            <div class="card mb-3">
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Informasi Order</h5>
+                    <span id="status-badge" class="badge bg-primary text-white rounded-pill px-3 py-2">
+                        {{ $statuses->firstWhere('slug', $order->status)?->name ?? '-' }}
+                    </span>
+                </div>
+
                 <div class="card-body">
-                    <p><strong>Kode Order:</strong> ORD-{{ $order->id }}</p>
-                    <p><strong>Customer:</strong> {{ $order->customer->name }}</p>
-                    <p><strong>Alamat:</strong> {{ $order->customer->address ?? '-' }}</p>
-                    <p><strong>No WA:</strong> {{ $order->customer->phone }}</p>
-                    <p><strong>Total Item:</strong> {{ $order->total_item }}</p>
-                    <p><strong>Total Harga:</strong> Rp {{ number_format($order->total_price,0,',','.') }}</p>
-                    <p><strong>Metode Pembayaran:</strong> {{ $order->payment_method }}</p>
-                    <p>
-                        <strong>Status:</strong>
-                        <select id="order-status-select" class="form-control d-inline-block w-auto me-2">
-                            @foreach($statuses as $st)
-                                <option value="{{ $st->slug }}" {{ $order->status == $st->slug ? 'selected' : '' }}>
-                                    {{ $st->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <span id="status-badge" class="badge bg-primary text-white rounded-pill px-3">
-                            {{ $statuses->firstWhere('slug', $order->status)?->name ?? '-' }}
-                        </span>
-                    </p>
-                    <p><strong>Waktu Transaksi:</strong> {{ \Carbon\Carbon::parse($order->transaction_time)->format('d-m-Y H:i') }}</p>
+                    <div class="row gy-4">
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="text-muted small mb-1">Kode Order</div>
+                            <div class="fw-semibold">ORD-{{ $order->id }}</div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="text-muted small mb-1">Customer</div>
+                            <div class="fw-semibold">{{ $order->customer->name }}</div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="text-muted small mb-1">No. WhatsApp</div>
+                            <div class="fw-semibold">{{ $order->customer->phone ?? '-' }}</div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="text-muted small mb-1">Waktu Transaksi</div>
+                            <div class="fw-semibold">
+                                {{ \Carbon\Carbon::parse($order->transaction_time)->format('d M Y, H:i') }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-sm-12">
+                            <div class="text-muted small mb-1">Alamat</div>
+                            <div class="fw-semibold">{{ $order->customer->address ?? '-' }}</div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="text-muted small mb-1">Total Item</div>
+                            <div class="fw-semibold">{{ $order->total_item }}</div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="text-muted small mb-1">Total Harga</div>
+                            <div class="fw-semibold text-success">
+                                Rp {{ number_format($order->total_price,0,',','.') }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr class="my-4">
+
+                    {{-- Info Pembayaran --}}
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="text-muted small mb-2">
+                            <i class="fas fa-money-check-alt me-1"></i> Metode Pembayaran
+                        </div>
+
+                        @php
+                            $payment = $order->payment_method ?? '-';
+                            preg_match('/Rek\.(.*?)\s+([\w\d]+)\s+AN\.(.*)/i', $payment, $match);
+                        @endphp
+
+                        @if(!empty($match))
+                            <div class="mb-1">
+                                <span class="text-muted small">Bank:</span>
+                                <span class="fw-semibold">{{ trim($match[1]) }}</span>
+                            </div>
+                            <div class="mb-1">
+                                <span class="text-muted small">No. Rekening:</span>
+                                <span class="fw-semibold">{{ trim($match[2]) }}</span>
+                            </div>
+                            <div class="mb-1">
+                                <span class="text-muted small">Atas Nama:</span>
+                                <span class="fw-semibold">{{ trim($match[3]) }}</span>
+                            </div>
+                        @else
+                            <div class="fw-semibold">{{ $payment }}</div>
+                        @endif
+                    </div>
+                </div>
+                    <hr class="my-4">
+
+                    {{-- Status Order (editable) --}}
+                    <div class="row align-items-center">
+                        <div class="col-md-4 col-sm-6">
+                            <label class="text-muted small mb-1 d-block">Ubah Status Order</label>
+                            <select id="order-status-select" class="form-control">
+                                @foreach($statuses as $st)
+                                    <option value="{{ $st->slug }}" {{ $order->status == $st->slug ? 'selected' : '' }}>
+                                        {{ $st->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 

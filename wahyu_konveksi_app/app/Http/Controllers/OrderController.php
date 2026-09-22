@@ -8,6 +8,8 @@ use App\Models\OrderItem;
 use App\Models\OrderStatus;
 use App\Models\ProductionProcess;
 use Carbon\Carbon;
+use App\Models\Setting; // tambahkan ini di atas
+
 
 class OrderController extends Controller
 {
@@ -179,9 +181,10 @@ public function index(Request $request)
     // =========================
     // Kirim WA ke customer
     // =========================
-       public function sendWA($orderId)
+  
+
+public function sendWA($orderId)
 {
-    // ambil order lengkap
     $order = Order::with([
         'customer',
         'items.product',
@@ -192,10 +195,8 @@ public function index(Request $request)
 
     $customer = $order->customer;
 
-    // ambil master proses untuk mapping ID → nama
     $processMaster = ProductionProcess::pluck('name', 'id');
 
-    // mulai bikin pesan WA
     $message  = "Halo {$customer->name}, Berikut detail order Anda:%0A";
     $message .= "Kode Order: ORD-{$order->id}%0A";
     $message .= "Tanggal Order: " . Carbon::parse($order->transaction_time)->format('d-m-Y H:i') . "%0A";
@@ -210,17 +211,14 @@ public function index(Request $request)
         $message .= "{$item->product->name} - Qty: {$item->qty} - Rp "
             . number_format($subtotal, 0, ',', '.') . "%0A";
 
-        // ambil proses terakhir item
         $lastProcess = $item->processes()->latest('id')->first();
 
         $processName = 'Belum diproses';
 
         if ($lastProcess) {
-            // jika numeric → data lama → mapping ke master
             if (is_numeric($lastProcess->process)) {
                 $processName = $processMaster[$lastProcess->process] ?? 'Belum diproses';
             } else {
-                // jika sudah text → data baru
                 $processName = $lastProcess->process;
             }
         }
@@ -231,10 +229,21 @@ public function index(Request $request)
     $message .= "=================%0A";
     $message .= "Status Order: " . ($order->statusData->name ?? ucfirst($order->status)) . "%0A";
 
-    // format nomor WA internasional
+    // 🔹 Tambahan: info rekening pembayaran
+    $bankName    = Setting::getValue('bank_name');
+    $bankNumber  = Setting::getValue('bank_account_number');
+    $bankHolder  = Setting::getValue('bank_account_holder');
+
+    if ($bankName && $bankNumber && $bankHolder) {
+        $message .= "=================%0A";
+        $message .= "Pembayaran dapat ditransfer ke:%0A";
+        $message .= "Bank: {$bankName}%0A";
+        $message .= "No. Rekening: {$bankNumber}%0A";
+        $message .= "Atas Nama: {$bankHolder}%0A";
+    }
+
     $phone = preg_replace('/^0/', '62', $customer->phone);
 
-    // redirect ke WA
     return redirect("https://wa.me/{$phone}?text={$message}");
 }
 

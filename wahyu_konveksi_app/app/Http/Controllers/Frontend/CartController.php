@@ -9,6 +9,8 @@ use App\Models\Product;
 use App\Models\Order;
 use Auth;
 use Illuminate\Support\Str;
+use App\Models\Setting;
+
 
 class CartController extends Controller
 {
@@ -133,7 +135,13 @@ class CartController extends Controller
                 'total_item'       => $totalItem,
                 'status'           => 'menunggu_konfirmasi',
                 'transaction_time' => now(),
-                'payment_method'   => 'Transfer Rek.Mandiri 0754343 AN.Wahyu',
+        
+                'payment_method' => sprintf(
+                    'Transfer Rek.%s %s AN.%s',
+                    Setting::getValue('bank_name', '-'),
+                    Setting::getValue('bank_account_number', '-'),
+                    Setting::getValue('bank_account_holder', '-')
+                ),
             ]);
 
             // ================= SIMPAN ORDER_ID KE ITEM =================
@@ -169,7 +177,9 @@ class CartController extends Controller
         Nomor Order: {$orderCode}";
 
             // ⬇️ INI KUNCI UTAMANYA
-            $waUrl = "https://api.whatsapp.com/send?phone=6287738728252&text="
+            $adminPhone = Setting::getValue('store_phone', '6287738728252');
+
+            $waUrl = "https://api.whatsapp.com/send?phone={$adminPhone}&text="
                 . rawurlencode($waMessage);
 
             // ================= (OPSIONAL) KOSONGKAN CART =================
