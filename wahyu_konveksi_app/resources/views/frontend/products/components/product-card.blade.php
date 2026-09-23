@@ -1,106 +1,156 @@
-        @php
-            $images = is_array($product->images) ? $product->images : [];
+@php
+    $images = is_array($product->images) ? $product->images : [];
 
-                // Hitung harga total: base price + semua opsi wajib / auto select
-                $totalPrice = $product->price;
-                if($product->options && $product->options->count() > 0){
-                    foreach($product->options as $opt){
-                        if($opt->is_required || $product->auto_select_all_custom){
-                            foreach($opt->values as $val){
-                                $totalPrice += $val->extra_price;
-                            }
-                        }
-                    }
+    $totalPrice = $product->price;
+    if ($product->options && $product->options->count() > 0) {
+        foreach ($product->options as $opt) {
+            if ($opt->is_required || $product->auto_select_all_custom) {
+                foreach ($opt->values as $val) {
+                    $totalPrice += $val->extra_price;
                 }
-        @endphp
-
-        <a href="{{ route('frontend.products.show', $product) }}"
-        class="text-decoration-none text-dark w-100 h-100 d-block">
-
-            <div class="card product-card h-100 border-0 shadow-sm overflow-hidden">
-
-                {{-- IMAGE --}}
-                <div class="product-image-wrapper position-relative"
-                    data-images='@json($images)'>
-
-                    <img src="{{ !empty($images)
-                        ? asset('storage/'.$images[0])
-                        : asset('assets_frontend/assets/images/no-image.png') }}"
-                        class="product-image"
-                        alt="{{ $product->name }}">
-                </div>
-
-                {{-- CONTENT --}}
-                <div class="card-body text-center d-flex flex-column px-3">
-
-                    <span class="badge bg-primary mb-2 align-self-center">
-                        {{ $product->category?->name }}
-                    </span>
-
-                    <h5 class="fw-bold mb-1 mt-1">
-                        {{ $product->name }}
-                    </h5>
-
-                    <p class="text-muted mb-3">
-                        Rp {{ number_format($totalPrice) }}
-                    </p>
-
-                    {{-- BUTTON --}}
-                    <span class="btn btn-sm btn-outline-primary mt-auto">
-                        Detail
-                    </span>
-
-                </div>
-            </div>
-        </a>
-
-        {{-- ==================== STYLE ==================== --}}
-        <style>
-        /* CARD */
-        .product-card {
-            border-radius: 15px;
-            transition: transform .3s ease, box-shadow .3s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0,0,0,.12);
-        }
-
-        /* IMAGE WRAPPER */
-        .product-image-wrapper {
-            height: 320px;
-            background: #f8f9fa;
-            border-radius: 15px 15px 0 0;
-            overflow: hidden;
-        }
-
-        /* IMAGE */
-        .product-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* FOTO TIDAK TERPOTONG */
-            transition: opacity .5s ease, transform .5s ease;
-        }
-
-        /* ZOOM ON HOVER */
-        .product-card:hover .product-image {
-            transform: scale(1.05);
-        }
-
-        /* MOBILE */
-        @media (max-width: 576px) {
-            .product-image-wrapper {
-                height: 240px;
             }
         }
-        </style>
+    }
+@endphp
 
-        {{-- ==================== SCRIPT ==================== --}}
-        <script>
-        document.addEventListener('DOMContentLoaded', () => {
+<div class="card product-card h-100 border-0 shadow-sm overflow-hidden w-100">
 
-        document.querySelectorAll('.product-image-wrapper').forEach(wrapper => {
+    <a href="{{ route('frontend.products.show', $product->slug) }}" class="text-decoration-none text-dark">
+        <div class="product-image-wrapper position-relative" data-images='@json($images)'>
+            <img src="{{ !empty($images) ? asset('storage/'.$images[0]) : asset('assets_frontend/assets/images/no-image.png') }}"
+                 class="product-image"
+                 alt="{{ $product->name }}"
+                 loading="lazy">
+        </div>
+    </a>
+
+    <button type="button"
+            class="btn-add-cart"
+            data-product-id="{{ $product->id }}"
+            data-logged-in="{{ auth('customer')->check() ? '1' : '0' }}"
+            title="Tambah ke keranjang">
+        <i class="fa fa-shopping-cart"></i>
+    </button>
+
+    <a href="{{ route('frontend.products.show', $product->slug) }}" class="text-decoration-none text-dark">
+        <div class="card-body text-center d-flex flex-column px-3 py-4">
+            <span class="badge bg-primary mb-3">{{ $product->category?->name }}</span>
+            <h5 class="fw-bold mb-2 product-title">{{ $product->name }}</h5>
+            <p class="text-muted mb-3 fs-5">Rp {{ number_format($totalPrice, 0, ',', '.') }}</p>
+            <span class="btn btn-sm btn-outline-primary mt-auto py-2 px-4">Detail</span>
+        </div>
+    </a>
+</div>
+
+{{-- ==================== STYLE — cuma dicetak sekali walau di-include berkali-kali ==================== --}}
+@once
+<style>
+.product-card {
+    position: relative;
+    border-radius: 20px !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12) !important;
+}
+
+.product-image-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #f8f9fa;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.05);
+}
+
+.product-image.fade-out {
+    opacity: 0;
+}
+
+.btn-add-cart {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    color: #212529;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    z-index: 5;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-add-cart:hover {
+    background: #212529;
+    color: #fff;
+    transform: scale(1.1);
+}
+
+/* 🔹 Feedback tekan instan */
+.btn-add-cart:active {
+    transform: scale(0.85);
+}
+
+.btn-add-cart.is-loading i {
+    animation: cartSpin 0.6s linear infinite;
+}
+
+.btn-add-cart.is-success {
+    background: #28a745 !important;
+    color: #fff !important;
+}
+
+@keyframes cartSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.product-title {
+    font-size: 1.1rem;
+    min-height: 2.6rem;
+}
+
+.product-card .badge {
+    font-size: 0.9rem;
+    padding: 0.5em 0.9em;
+    border-radius: 20px;
+}
+
+.product-card .btn-outline-primary {
+    border-radius: 30px;
+    font-size: 0.9rem;
+}
+</style>
+@endonce
+
+{{-- ==================== SCRIPT — cuma dicetak & dijalankan sekali ==================== --}}
+@once
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    function initProductImageSliders(root = document) {
+        root.querySelectorAll('.product-image-wrapper').forEach(wrapper => {
+            if (wrapper.dataset.sliderInit === '1') return;
+            wrapper.dataset.sliderInit = '1';
 
             const images = JSON.parse(wrapper.dataset.images || '[]');
             if (images.length <= 1) return;
@@ -109,17 +159,109 @@
             let index = 0;
 
             setInterval(() => {
-            index = (index + 1) % images.length;
-
-            img.style.opacity = '0';
-
-            setTimeout(() => {
-                img.src = "{{ asset('storage') }}/" + images[index];
-                img.style.opacity = '1';
-            }, 400);
-
+                index = (index + 1) % images.length;
+                img.classList.add('fade-out');
+                setTimeout(() => {
+                    img.src = "{{ asset('storage') }}/" + images[index];
+                    img.classList.remove('fade-out');
+                }, 300);
             }, 5000);
         });
+    }
+    initProductImageSliders();
 
+    if (!window.__cartAddDelegationBound) {
+        window.__cartAddDelegationBound = true;
+
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('.btn-add-cart');
+            if (!btn) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (btn.dataset.loggedIn !== '1') {
+                window.location.href = "{{ route('frontend.login') }}";
+                return;
+            }
+
+            const productId = btn.dataset.productId;
+            const originalIcon = btn.innerHTML;
+            btn.disabled = true;
+            btn.classList.add('is-loading');
+            btn.innerHTML = '<i class="fa fa-spinner"></i>';
+
+            fetch("{{ route('frontend.cart.add') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ product_id: productId, qty: 1 })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    btn.innerHTML = '<i class="fa fa-check"></i>';
+                    btn.classList.add('is-success');
+
+                    Toastify({
+                        text: 'Ditambahkan ke keranjang',
+                        duration: 1800,
+                        gravity: 'top',
+                        position: 'right',
+                        backgroundColor: '#28a745',
+                        close: true,
+                    }).showToast();
+
+                    const cartBadgeDesktop = document.getElementById('cart-count-badge-desktop');
+                    const cartBadgeMobile = document.getElementById('cart-count-badge-mobile');
+                    if (data.cartCount !== undefined) {
+                        if (cartBadgeDesktop) {
+                            cartBadgeDesktop.innerText = data.cartCount;
+                            cartBadgeDesktop.style.display = 'inline-flex';
+                        }
+                        if (cartBadgeMobile) {
+                            cartBadgeMobile.innerText = data.cartCount;
+                            cartBadgeMobile.style.display = 'inline-flex';
+                        }
+                    }
+
+                    setTimeout(() => {
+                        btn.innerHTML = originalIcon;
+                        btn.classList.remove('is-success');
+                    }, 1200);
+
+                } else {
+                    btn.innerHTML = originalIcon;
+                    Toastify({
+                        text: 'Produk gagal ditambahkan ke keranjang.',
+                        duration: 2000,
+                        gravity: 'top',
+                        position: 'right',
+                        backgroundColor: '#dc3545',
+                        close: true,
+                    }).showToast();
+                }
+            })
+            .catch(() => {
+                btn.innerHTML = originalIcon;
+                Toastify({
+                    text: 'Terjadi kesalahan. Coba lagi.',
+                    duration: 2000,
+                    gravity: 'top',
+                    position: 'right',
+                    backgroundColor: '#dc3545',
+                    close: true,
+                }).showToast();
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.classList.remove('is-loading');
+            });
         });
-        </script>
+    }
+});
+</script>
+@endonce

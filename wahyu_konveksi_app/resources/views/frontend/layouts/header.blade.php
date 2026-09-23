@@ -142,10 +142,11 @@
         </div>
 
         {{-- WhatsApp --}}
-        @php
-            $waNumber = $appSettings['whatsapp'] ?? '6287738728252';
-            $waMessage = urlencode('Halo WHS Konveksindo, saya ingin bertanya terkait layanan konveksi yang tersedia. Terima kasih.');
-        @endphp
+      @php
+          $waNumber = $appSettings['store_phone'] ?? '6287738728252';
+          $storeName = $appSettings['store_name'] ?? 'Toko Kami';
+          $waMessage = urlencode("Halo {$storeName}, saya ingin bertanya terkait layanan konveksi yang tersedia. Terima kasih.");
+      @endphp
 
         <a href="https://api.whatsapp.com/send?phone={{ $waNumber }}&text={{ $waMessage }}"
           class="header-tools__item" target="_blank" rel="noopener">

@@ -39,14 +39,14 @@
 
     {{-- Kontak --}}
       @php
-          $waNumber = $appSettings['whatsapp'] ?? '6287738728252';
-          // Format nomor untuk ditampilkan (bisa pakai spasi seperti contoh)
+          $waNumber = $appSettings['store_phone'] ?? '6287738728252';
+          $storeName = $appSettings['store_name'] ?? 'Toko Kami';
           $displayNumber = preg_replace('/(\d{4})(\d{4})(\d+)/', '$1 $2 $3', $waNumber);
       @endphp
 
       <p class="m-0 mb-1 d-flex align-items-center gap-2">
           <img src="{{ asset('assets_frontend/assets/images/icon/hp.png') }}" width="16" height="16" alt="Phone">
-          <a href="https://api.whatsapp.com/send?phone={{ $waNumber }}&text={{ urlencode('Halo WHS Konveksindo, saya ingin bertanya terkait layanan konveksi yang tersedia. Terima kasih.') }}" 
+          <a href="https://api.whatsapp.com/send?phone={{ $waNumber }}&text={{ urlencode("Halo {$storeName}, saya ingin bertanya terkait layanan konveksi yang tersedia. Terima kasih.") }}"
             class="text-dark text-decoration-none" target="_blank" rel="noopener">
               {{ $displayNumber }}
           </a>
@@ -128,7 +128,7 @@
     <h6 class="sub-menu__title text-uppercase">Produk</h6>
     <ul class="sub-menu__list list-unstyled">
         @isset($categories)
-            @foreach($categories as $category)
+            @foreach($categories->take(5) as $category)
                 <li class="sub-menu__item">
                     <a href="{{ url('/kategori/' . $category->slug) }}" class="menu-link menu-link_us-s">
                         {{ $category->name }}
@@ -144,17 +144,17 @@
 <div class="footer-column footer-menu mb-4 mb-lg-0">
   <h6 class="sub-menu__title text-uppercase">Artikel</h6>
   <ul class="sub-menu__list list-unstyled">
-    @foreach($articles as $article)
-      <li class="sub-menu__item">
-        <a href="{{ url('/artikel/' . $article->slug) }}" class="menu-link menu-link_us-s">
-          {{ mb_strimwidth($article->title, 0, 25, '...') }}
-        </a>
-      </li>
-    @endforeach
+    @isset($articles)
+      @foreach($articles->take(5) as $article)
+        <li class="sub-menu__item">
+          <a href="{{ url('/artikel/' . $article->slug) }}" class="menu-link menu-link_us-s">
+            {{ mb_strimwidth($article->title, 0, 25, '...') }}
+          </a>
+        </li>
+      @endforeach
+    @endisset
   </ul>
 </div>
-
-
 
 
 
@@ -211,15 +211,16 @@
         </div>
 
         {{-- WhatsApp --}}
-        @php
-            $waNumber = $appSettings['whatsapp'] ?? '6287738728252';
-        @endphp
+          @php
+              $waNumber = $appSettings['store_phone'] ?? '6287738728252';
+              $storeName = $appSettings['store_name'] ?? 'Toko Kami';
+          @endphp
 
-        <div class="col-3">
-            <a href="https://api.whatsapp.com/send?phone={{ $waNumber }}&text=Halo%20WHSKonveksindo,%20saya%20ingin%20bertanya%20terkait%20layanan%20konveksi%20yang%20tersedia.%20Terima%20kasih."
-              target="_blank"
-              rel="noopener"
-              class="footer-mobile__link d-flex flex-column align-items-center">
+          <div class="col-3">
+              <a href="https://api.whatsapp.com/send?phone={{ $waNumber }}&text={{ urlencode("Halo {$storeName}, saya ingin bertanya terkait layanan konveksi yang tersedia. Terima kasih.") }}"
+                target="_blank"
+                rel="noopener"
+                class="footer-mobile__link d-flex flex-column align-items-center">
               
                 <img src="{{ asset('assets_frontend/assets/images/icon/wa.png') }}"
                     width="20"

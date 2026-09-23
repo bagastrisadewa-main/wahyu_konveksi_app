@@ -225,21 +225,23 @@
 
 
 
-                {{-- Floating WhatsApp --}}
-                        @php
-                            $waNumber = $appSettings['whatsapp'] ?? '6287738728252';
-                        @endphp
+                    {{-- Floating WhatsApp --}}
+                    @php
+                        $waNumber = $appSettings['store_phone'] ?? '6287738728252';
+                        $storeName = $appSettings['store_name'] ?? 'Toko Kami';
+                        $waMessage = urlencode("Halo {$storeName}, saya ingin bertanya tentang jasa konveksi. Terima kasih.");
+                    @endphp
 
-                        <a href="https://api.whatsapp.com/send?phone={{ $waNumber }}&text=Halo%20WHSKonveksindo,%20saya%20ingin%20bertanya%20tentang%20jasa%20konveksi.%20Terima%20kasih."
-                        class="floating-wa"
-                        target="_blank"
-                        rel="noopener">
-                            
-                            <img src="{{ asset('assets_frontend/assets/images/icon/social.png') }}"
-                                alt="WhatsApp WHSKonveksindo">
+                    <a href="https://api.whatsapp.com/send?phone={{ $waNumber }}&text={{ $waMessage }}"
+                    class="floating-wa"
+                    target="_blank"
+                    rel="noopener">
+                        
+                        <img src="{{ asset('assets_frontend/assets/images/icon/social.png') }}"
+                            alt="WhatsApp {{ $storeName }}">
 
-                            <span class="wa-text">Chat WhatsApp</span>
-                        </a>
+                        <span class="wa-text">Chat WhatsApp</span>
+                    </a>
 
 
         <style>
