@@ -127,8 +127,8 @@
 <div class="footer-column footer-menu mb-4 mb-lg-0">
     <h6 class="sub-menu__title text-uppercase">Produk</h6>
     <ul class="sub-menu__list list-unstyled">
-        @isset($categories)
-            @foreach($categories->take(5) as $category)
+        @isset($menuCategories)
+            @foreach($menuCategories as $category)
                 <li class="sub-menu__item">
                     <a href="{{ url('/kategori/' . $category->slug) }}" class="menu-link menu-link_us-s">
                         {{ $category->name }}
@@ -145,7 +145,7 @@
   <h6 class="sub-menu__title text-uppercase">Artikel</h6>
   <ul class="sub-menu__list list-unstyled">
     @isset($articles)
-      @foreach($articles->take(5) as $article)
+      @foreach($articles as $article)
         <li class="sub-menu__item">
           <a href="{{ url('/artikel/' . $article->slug) }}" class="menu-link menu-link_us-s">
             {{ mb_strimwidth($article->title, 0, 25, '...') }}

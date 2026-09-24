@@ -52,7 +52,7 @@ class AppServiceProvider extends ServiceProvider
             ->get();
 
             // ✅ Tambahan
-            // $categories = Category::orderBy('name')->take(5)->get();
+             $categories = Category::orderBy('name')->take(5)->get();
                         // ✅ KHUSUS HEADER / FOOTER (LIMIT 5)
             $menuCategories = Category::orderBy('name')
                 ->take(5)
@@ -72,7 +72,7 @@ class AppServiceProvider extends ServiceProvider
                 'appSettings'     => $appSettings,
                 'navigationMenus' => $navigationMenus,
                  'menuCategories'  => $menuCategories,
-                // 'categories'      => $categories,
+                 'categories'      => $categories,
                 'articles'        => $articles,
             ]);
         });

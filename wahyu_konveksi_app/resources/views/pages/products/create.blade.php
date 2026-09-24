@@ -83,17 +83,11 @@
                         <div id="optionsContainer">
                             {{-- ROW DEFAULT --}}
                             <div class="option-row row mb-2 align-items-center">
-                                <div class="col-md-3">
+                                <input type="hidden" name="options[0][type]" value="checkbox">
+                                <div class="col-md-4">
                                     <input type="text" name="options[0][name]" class="form-control" placeholder="Nama Opsi (contoh: Bordir)">
                                 </div>
-                                <div class="col-md-2">
-                                    <select name="options[0][type]" class="form-control">
-                                        <option value="checkbox" selected>Checkbox</option>
-                                        <option value="select">Pilihan</option>
-                                        <option value="number">Jumlah</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <select name="options[0][is_required]" class="form-control">
                                         <option value="0">Opsional</option>
                                         <option value="1">Wajib</option>
@@ -253,6 +247,7 @@ optForm.addEventListener('submit', function(e){
             const newRow = row.cloneNode(true);
             newRow.querySelectorAll('input, select').forEach(el => {
                 el.name = el.name.replace(/\d+/, optionIndex);
+                if (el.type === 'hidden') return; // jangan reset hidden type="checkbox"
                 if (el.tagName === 'SELECT') el.selectedIndex = 0;
                 else el.value = '';
             });

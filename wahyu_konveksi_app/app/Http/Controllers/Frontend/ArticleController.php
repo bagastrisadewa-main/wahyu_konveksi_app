@@ -26,7 +26,7 @@ class ArticleController extends Controller
                   ->orWhere('content', 'like', '%'.$request->q.'%');
         }
 
-        $articles = $query->orderBy('created_at', 'desc')->paginate(9);
+        $paginatedArticles = $query->orderBy('created_at', 'desc')->paginate(9);
 
         $navigationMenus = NavigationMenu::orderBy('order', 'asc')->get();
 
@@ -35,6 +35,6 @@ class ArticleController extends Controller
             ->orderBy('order')
             ->get();
 
-        return view('frontend.pages.artikel.index', compact('articles', 'layout', 'navigationMenus', 'sliders'));
+       return view('frontend.pages.artikel.index', compact('paginatedArticles', 'layout', 'navigationMenus', 'sliders'));
     }
 }

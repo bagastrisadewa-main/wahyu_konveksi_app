@@ -7,41 +7,63 @@ use App\Models\Customer;
 use App\Models\OrderItemProcessLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-    /* ===============================
-     | RINGKASAN UTAMA
-     =============================== */
-    $totalOrder = Order::count();
-    $totalCustomer = Customer::count();
+        /* ===============================
+         | FILTER PERIODE
+         =============================== */
+        $period = $request->get('period', 'all'); // all | today | week | month | custom
+        $from   = $request->get('from');
+        $to     = $request->get('to');
 
-    // Ambil data orders beserta items dan proses terakhir
-    $orders = Order::with(['items.processes'])->get();
+        [$startDate, $endDate] = match($period) {
+            'today' => [Carbon::today(), Carbon::today()->endOfDay()],
+            'week'  => [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()],
+            'month' => [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()],
+            'custom' => [
+                $from ? Carbon::parse($from)->startOfDay() : Carbon::now()->startOfMonth(),
+                $to ? Carbon::parse($to)->endOfDay() : Carbon::now()->endOfDay(),
+            ],
+            default => [null, null], // 'all' → tanpa filter
+        };
 
-    // Hitung jumlah order berdasarkan status master (dari tabel order_statuses)
-    $confirmedOrder = $orders->where('status', 'dikonfirmasi')->count();
-    $completedOrder = $orders->where('status', 'selesai')->count();
-    $cancelledOrder = $orders->where('status', 'dibatalkan')->count();
+        $applyPeriod = function ($query) use ($startDate, $endDate) {
+            if ($startDate && $endDate) {
+                $query->whereBetween('transaction_time', [$startDate, $endDate]);
+            }
+            return $query;
+        };
 
-    // Hitung total revenue dari item yang proses terakhirnya sudah 'completed'
-    $totalRevenue = 0;
-    foreach ($orders as $order) {
-        foreach ($order->items as $item) {
-            $lastProcess = $item->processes->last();
-            if ($lastProcess && $lastProcess->status === 'completed') {
-                $totalRevenue += $item->subtotal + $item->options->sum('extra_price');
+        /* ===============================
+         | RINGKASAN UTAMA
+         =============================== */
+        $totalOrder    = $applyPeriod(Order::query())->count();
+        $totalCustomer = Customer::count(); // total customer terdaftar, tidak terikat periode
+
+        $orders = $applyPeriod(Order::with(['items.processes', 'items.options']))->get();
+
+        $confirmedOrder = $orders->where('status', 'dikonfirmasi')->count();
+        $completedOrder = $orders->where('status', 'selesai')->count();
+        $cancelledOrder = $orders->where('status', 'dibatalkan')->count();
+
+        $totalRevenue = 0;
+        foreach ($orders as $order) {
+            foreach ($order->items as $item) {
+                $lastProcess = $item->processes->last();
+                if ($lastProcess && $lastProcess->status === 'completed') {
+                    $totalRevenue += $item->subtotal + $item->options->sum('extra_price');
+                }
             }
         }
-    }
-
 
         /* ===============================
          | ORDER TERBARU
          =============================== */
-        $latestOrders = Order::with('customer')
+        $latestOrders = $applyPeriod(Order::with('customer'))
             ->latest()
             ->limit(5)
             ->get();
@@ -49,56 +71,48 @@ class DashboardController extends Controller
         /* ===============================
          | TOP CUSTOMER
          =============================== */
-        $topCustomers = Order::select(
+        $topCustomers = $applyPeriod(Order::select(
                 'customer_id',
                 DB::raw('COUNT(id) as total_order'),
                 DB::raw('SUM(total_price) as total_spent')
-            )
+            ))
             ->with('customer')
             ->groupBy('customer_id')
             ->orderByDesc('total_order')
             ->limit(5)
             ->get();
 
-            // Chart data Top Customer
-$topCustomerChart = $topCustomers->map(fn($item) => [
-    'label' => $item->customer->name ?? 'Unknown',
-    'value' => $item->total_order
-]);
+        $topCustomerChart = $topCustomers->map(fn($item) => [
+            'label' => $item->customer->name ?? 'Unknown',
+            'value' => $item->total_order
+        ]);
 
         /* ===============================
          | TOP PRODUK TERLARIS
          =============================== */
-        $topProducts = DB::table('order_items')
+        $topProductsQuery = DB::table('order_items')
             ->join('products', 'products.id', '=', 'order_items.product_id')
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
             ->select(
                 'products.name',
                 DB::raw('SUM(order_items.qty) as total_sold')
             )
             ->groupBy('products.name')
-            ->orderByDesc('total_sold')
-            ->limit(5)
-            ->get();
+            ->orderByDesc('total_sold');
 
-// Chart data Top Produk
-$topProductChart = $topProducts->map(fn($item) => [
-    'label' => $item->name,
-    'value' => $item->total_sold
-]);
+        if ($startDate && $endDate) {
+            $topProductsQuery->whereBetween('orders.transaction_time', [$startDate, $endDate]);
+        }
 
-        /* ===============================
-         | CHART PROGRES PRODUKSI
-         =============================== */
-        $productionChart = OrderItemProcessLog::select(
-                'status',
-                DB::raw('COUNT(*) as total')
-            )
-            ->groupBy('status')
-            ->get();
+        $topProducts = $topProductsQuery->limit(5)->get();
+
+        $topProductChart = $topProducts->map(fn($item) => [
+            'label' => $item->name,
+            'value' => $item->total_sold
+        ]);
 
         return view('pages.dashboard', compact(
             'totalOrder',
-
             'confirmedOrder',
             'completedOrder',
             'cancelledOrder',
@@ -107,12 +121,11 @@ $topProductChart = $topProducts->map(fn($item) => [
             'latestOrders',
             'topCustomers',
             'topProducts',
-    'topCustomerChart',  // <-- wajib dikirim ke view
-    'topProductChart'    // <-- wajib dikirim ke view
-          
-           
+            'topCustomerChart',
+            'topProductChart',
+            'period',
+            'from',
+            'to'
         ));
     }
-
-
 }

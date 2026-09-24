@@ -153,77 +153,125 @@
           <img src="{{ asset('assets_frontend/assets/images/icon/wa.png') }}" width="20" height="20" alt="WhatsApp">
         </a>
               {{-- 🔽 TAMBAHKAN DI SINI --}}
-                <div class="header-tools__item position-relative d-none d-lg-block">
+          <div class="header-tools__item position-relative d-none d-lg-block hover-popover-wrap">
 
-                    @auth('customer')
-                        <a href="javascript:void(0)" id="customerDropdownToggle" class="header-user-icon">
-                            <img src="{{ asset('assets_frontend/assets/images/icon/user.png') }}"
-                                alt="User">
-                        </a>
+            @auth('customer')
+                @php $customer = auth('customer')->user(); @endphp
 
-                        <div id="customerDropdown"
-                            class="position-absolute bg-white shadow rounded d-none"
-                            style="right:0; top:40px; min-width:160px; z-index:9999">
+                <a href="{{ route('frontend.profile') }}" class="header-user-icon d-block">
+                    <img src="{{ asset('assets_frontend/assets/images/icon/user.png') }}"
+                        alt="User">
+                </a>
 
-                            <a href="{{ route('frontend.profile') }}"
-                              class="dropdown-item px-3 py-2 d-block text-dark">
-                                👤 Profil Saya
-                            </a>
-                            <a href="{{ route('frontend.orders.history') }}"
-                            {{-- <a href="" --}}
-                            {{-- {{ route('frontend.orders.history') }} --}}
-                              class="dropdown-item px-3 py-2 d-block text-dark">
-                                📦 History Order
-                            </a>
-                            <form action="{{ route('frontend.logout') }}" method="POST">
-                                @csrf
-                                <button type="submit"
-                                        class="dropdown-item px-3 py-2 text-danger w-100 text-start">
-                                    🚶‍♂️ Logout
-                                </button>
-                            </form>
+                <div class="header-popover header-popover--profile">
+                    <div class="header-popover__header">
+                        <div class="header-popover__avatar">
+                            {{ strtoupper(substr($customer->name, 0, 1)) }}
                         </div>
+                        <div class="overflow-hidden">
+                            <div class="header-popover__name">{{ $customer->name }}</div>
+                            <div class="header-popover__sub">{{ $customer->email }}</div>
+                        </div>
+                    </div>
 
-                    @else
-                        <a href="{{ route('frontend.login') }}" class="d-block">
-                            <svg width="20" height="20">
-                                <use href="#icon_user"></use>
-                            </svg>
+                    <div class="header-popover__body">
+                        <p class="mb-1"><i class="fa fa-phone me-2"></i>{{ $customer->phone ?? '-' }}</p>
+                        <p class="mb-0"><i class="fa fa-map-marker me-2"></i>{{ \Illuminate\Support\Str::limit($customer->address ?? '-', 40) }}</p>
+                    </div>
+
+                    <div class="header-popover__footer">
+                        <a href="{{ route('frontend.profile') }}" class="header-popover__link">
+                            👤 Profil Saya
                         </a>
-                    @endauth
-
+                        <a href="{{ route('frontend.orders.history') }}" class="header-popover__link">
+                            📦 History Order
+                        </a>
+                        <form action="{{ route('frontend.logout') }}" method="POST" class="m-0">
+                            @csrf
+                            <button type="submit" class="header-popover__link header-popover__link--danger">
+                                🚶‍♂️ Logout
+                            </button>
+                        </form>
+                    </div>
                 </div>
 
-      {{-- Cart Desktop --}}
-      <div class="header-tools__item position-relative d-none d-lg-flex align-items-center justify-content-center">
-          <a href="{{ route('frontend.cart.index') }}"
-            class="header-tools__cart position-relative d-flex align-items-center justify-content-center">
+            @else
+                <a href="{{ route('frontend.login') }}" class="d-block">
+                    <svg width="20" height="20">
+                        <use href="#icon_user"></use>
+                    </svg>
+                </a>
+            @endauth
 
-              <svg class="d-block" width="20" height="20">
-                  <use href="#icon_cart"></use>
-              </svg>
+        </div>
 
-              @auth('customer')
-                  @php
+{{-- Cart Desktop --}}
+<div class="header-tools__item position-relative d-none d-lg-flex align-items-center justify-content-center hover-popover-wrap">
+    <a href="{{ route('frontend.cart.index') }}"
+      class="header-tools__cart position-relative d-flex align-items-center justify-content-center">
+
+        <svg class="d-block" width="20" height="20">
+            <use href="#icon_cart"></use>
+        </svg>
+
+        @auth('customer')
+            @php
                 $cartCount = auth('customer')->user()->cartItems()->sum('qty');
 
-                  @endphp
-              @else
-                  @php $cartCount = 0; @endphp
-              @endauth
+                $headerCartItems = \App\Models\OrderItem::with('product')
+                    ->where('customer_id', auth('customer')->id())
+                    ->whereNull('order_id')
+                    ->latest()
+                    ->take(3)
+                    ->get();
 
-              
+                $headerCartTotal = \App\Models\OrderItem::where('customer_id', auth('customer')->id())
+                    ->whereNull('order_id')
+                    ->sum('subtotal');
+            @endphp
+        @else
+            @php $cartCount = 0; @endphp
+        @endauth
 
-            <span id="cart-count-badge-desktop"
-                  class="cart-count-badge cart-badge position-absolute top-0 start-100 translate-middle"
-                  style="{{ $cartCount > 0 ? '' : 'display:none' }}">
-                {{ $cartCount }}
-            </span>
+      <span id="cart-count-badge-desktop"
+            class="cart-count-badge cart-badge position-absolute top-0 start-100 translate-middle"
+            style="{{ $cartCount > 0 ? '' : 'display:none' }}">
+          {{ $cartCount }}
+      </span>
 
+    </a>
 
-          </a>
-      </div>
+    @auth('customer')
+    <div class="header-popover header-popover--cart">
+        <div class="header-popover__title">Keranjang Belanja</div>
 
+        @forelse($headerCartItems as $item)
+            @php
+                $images = is_array(optional($item->product)->images) ? $item->product->images : [];
+                $thumb = !empty($images) ? asset('storage/'.$images[0]) : asset('assets_frontend/assets/images/no-image.png');
+            @endphp
+            <div class="header-popover__cart-item">
+                <img src="{{ $thumb }}" alt="{{ $item->product->name ?? '' }}">
+                <div class="overflow-hidden">
+                    <div class="header-popover__cart-item-name">{{ $item->product->name ?? 'Produk' }}</div>
+                    <div class="header-popover__cart-item-meta">{{ $item->qty }}x &middot; Rp {{ number_format($item->subtotal) }}</div>
+                </div>
+            </div>
+        @empty
+            <div class="header-popover__empty">Keranjang masih kosong</div>
+        @endforelse
+
+        @if($headerCartItems->isNotEmpty())
+            <div class="header-popover__cart-total">
+                <span>Total</span>
+                <strong>Rp {{ number_format($headerCartTotal) }}</strong>
+            </div>
+        @endif
+
+        <a href="{{ route('frontend.cart.index') }}" class="header-popover__cta">Lihat Keranjang</a>
+    </div>
+    @endauth
+</div>
 
 
               {{-- 🔼 END --}}
@@ -385,6 +433,211 @@
 .header-mobile__navigation {
   background: rgba(255, 255, 255, 0.55) !important;
   backdrop-filter: blur(6px);
+}
+
+
+/* ===== Hover Popover (Profile & Cart) ===== */
+.hover-popover-wrap { position: relative; }
+
+.header-popover {
+    position: absolute;
+    top: calc(100% + 14px);
+    right: 0;
+    width: 280px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+    padding: 18px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+    z-index: 9999;
+    text-align: left;
+}
+
+.hover-popover-wrap::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: -20px;
+    right: -20px;
+    height: 16px;
+}
+
+.hover-popover-wrap:hover .header-popover,
+.hover-popover-wrap:focus-within .header-popover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.header-popover--profile .header-popover__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 14px;
+}
+
+.header-popover__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #212529;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.header-popover__name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #212529;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header-popover__sub {
+    font-size: 0.8rem;
+    color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header-popover__body p {
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.header-popover__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.header-popover__link {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    color: #212529;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    text-align: left;
+    width: 100%;
+}
+
+.header-popover__link:hover {
+    background: #f5f5f5;
+}
+
+.header-popover__link--danger {
+    color: #dc3545;
+}
+
+
+/* ===== Cart popover ===== */
+.header-popover--cart {
+    width: 300px;
+}
+
+.header-popover__title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    color: #212529;
+}
+
+.header-popover__cart-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.header-popover__cart-item:last-of-type {
+    border-bottom: none;
+}
+
+.header-popover__cart-item img {
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #f8f9fa;
+    flex-shrink: 0;
+}
+
+.header-popover__cart-item-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #212529;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header-popover__cart-item-meta {
+    font-size: 0.78rem;
+    color: #888;
+}
+
+.header-popover__empty {
+    font-size: 0.85rem;
+    color: #888;
+    text-align: center;
+    padding: 16px 0;
+}
+
+.header-popover__more {
+    font-size: 0.75rem;
+    color: #aaa;
+    text-align: center;
+    padding-top: 8px;
+    font-style: italic;
+}
+
+.header-popover__cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-top: 4px;
+    border-top: 1px solid #f0f0f0;
+    font-size: 0.88rem;
+    color: #212529;
+}
+
+.header-popover__cta {
+    display: block;
+    text-align: center;
+    background: #212529;
+    color: #fff;
+    padding: 10px;
+    border-radius: 30px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 6px;
+    transition: background 0.2s ease;
+}
+
+.header-popover__cta:hover {
+    background: #0d6efd;
+    color: #fff;
 }
 
 
@@ -565,21 +818,21 @@ liveSearch("#search-input-mobile", "#search-results-mobile");
           /* =====================
       * 👤 DROPDOWN USER
       * ===================== */
-      const toggle = document.getElementById('customerDropdownToggle');
-      const dropdown = document.getElementById('customerDropdown');
+      // const toggle = document.getElementById('customerDropdownToggle');
+      // const dropdown = document.getElementById('customerDropdown');
 
-      if (toggle && dropdown) {
-        toggle.addEventListener('click', function (e) {
-          e.preventDefault();
-          dropdown.classList.toggle('d-none');
-        });
+      // if (toggle && dropdown) {
+      //   toggle.addEventListener('click', function (e) {
+      //     e.preventDefault();
+      //     dropdown.classList.toggle('d-none');
+      //   });
 
-        document.addEventListener('click', function (e) {
-          if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.classList.add('d-none');
-          }
-        });
-      }
+      //   document.addEventListener('click', function (e) {
+      //     if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
+      //       dropdown.classList.add('d-none');
+      //     }
+      //   });
+      // }
   });
 
 function updateCartBadge(totalQty) {

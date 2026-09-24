@@ -81,6 +81,21 @@
     </ul>
 </nav>
 
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Fallback manual toggle sidebar — jalan independen dari script bawaan tema
+    const toggleBtn = document.querySelector('[data-toggle="sidebar"]');
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.body.classList.toggle('sidebar-mini');
+            document.body.classList.toggle('sidebar-collapsed'); // jaga-jaga beda versi Stisla
+        });
+    }
+});
+</script>
 {{-- @push('scripts')
 <script>
 

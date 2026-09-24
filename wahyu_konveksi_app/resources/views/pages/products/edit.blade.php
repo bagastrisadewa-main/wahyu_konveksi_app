@@ -93,38 +93,32 @@
                         <div id="optionsContainer">
                             @if($product->options && $product->options->count() > 0)
                                 @foreach($product->options as $oIndex => $option)
-                                    <div class="option-row row mb-2 align-items-center">
-                                        <input type="hidden" name="options[{{ $oIndex }}][id]" value="{{ $option->id }}">
-                                        <div class="col-md-3">
-                                            <input type="text" name="options[{{ $oIndex }}][name]" class="form-control" value="{{ $option->name }}" placeholder="Nama Opsi">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <select name="options[{{ $oIndex }}][type]" class="form-control">
-                                                <option value="checkbox" {{ $option->type=='checkbox'?'selected':'' }}>Checkbox</option>
-                                                <option value="select" {{ $option->type=='select'?'selected':'' }}>Pilihan</option>
-                                                <option value="number" {{ $option->type=='number'?'selected':'' }}>Jumlah</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <select name="options[{{ $oIndex }}][is_required]" class="form-control">
-                                                <option value="0" {{ $option->is_required==0?'selected':'' }}>Opsional</option>
-                                                <option value="1" {{ $option->is_required==1?'selected':'' }}>Wajib</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3 d-flex flex-column">
-                                            @foreach($option->values as $vIndex => $val)
-                                                <div class="d-flex mb-1 align-items-center value-row">
-                                                    <input type="text" class="form-control mr-2" value="{{ $val->label }}" readonly>
-                                                    <input type="text" class="form-control rupiah mr-2" value="{{ number_format($val->extra_price,0,'','.') }}" readonly>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                        <div class="col-md-2 d-flex align-items-center">
-                                            <button type="button" class="btn btn-sm btn-danger remove-option">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
+                                <div class="option-row row mb-2 align-items-center">
+                                    <input type="hidden" name="options[{{ $oIndex }}][id]" value="{{ $option->id }}">
+                                    <input type="hidden" name="options[{{ $oIndex }}][type]" value="checkbox">
+                                    <div class="col-md-4">
+                                        <input type="text" name="options[{{ $oIndex }}][name]" class="form-control" value="{{ $option->name }}" placeholder="Nama Opsi">
                                     </div>
+                                    <div class="col-md-3">
+                                        <select name="options[{{ $oIndex }}][is_required]" class="form-control">
+                                            <option value="0" {{ $option->is_required==0?'selected':'' }}>Opsional</option>
+                                            <option value="1" {{ $option->is_required==1?'selected':'' }}>Wajib</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 d-flex flex-column">
+                                        @foreach($option->values as $vIndex => $val)
+                                            <div class="d-flex mb-1 align-items-center value-row">
+                                                <input type="text" class="form-control mr-2" value="{{ $val->label }}" readonly>
+                                                <input type="text" class="form-control rupiah mr-2" value="{{ number_format($val->extra_price,0,'','.') }}" readonly>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-center">
+                                        <button type="button" class="btn btn-sm btn-danger remove-option">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
                                 @endforeach
                             @endif
                         </div>
@@ -273,33 +267,27 @@ document.addEventListener('input', function(e){
     document.getElementById('addNewOption').addEventListener('click', function(){
         const div = document.createElement('div');
         div.classList.add('option-row','row','mb-2','align-items-center');
-        div.innerHTML = `
-            <div class="col-md-3">
-                <input type="text" name="options[${optionIndex}][name]" class="form-control" placeholder="Nama Opsi">
-            </div>
-            <div class="col-md-2">
-                <select name="options[${optionIndex}][type]" class="form-control">
-                    <option value="checkbox">Checkbox</option>
-                    <option value="select">Pilihan</option>
-                    <option value="number">Jumlah</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select name="options[${optionIndex}][is_required]" class="form-control">
-                    <option value="0">Opsional</option>
-                    <option value="1">Wajib</option>
-                </select>
-            </div>
-            <div class="col-md-3 d-flex align-items-center">
-                <input type="text" name="options[${optionIndex}][values][0][label]" class="form-control mr-2" placeholder="Label value">
-                <input type="text" name="options[${optionIndex}][values][0][extra_price]" class="form-control rupiah" placeholder="+ Harga">
-            </div>
-            <div class="col-md-2 d-flex align-items-center">
-                <button type="button" class="btn btn-sm btn-danger remove-option">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        `;
+                div.innerHTML = `
+                    <input type="hidden" name="options[${optionIndex}][type]" value="checkbox">
+                    <div class="col-md-4">
+                        <input type="text" name="options[${optionIndex}][name]" class="form-control" placeholder="Nama Opsi">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="options[${optionIndex}][is_required]" class="form-control">
+                            <option value="0">Opsional</option>
+                            <option value="1">Wajib</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-center">
+                        <input type="text" name="options[${optionIndex}][values][0][label]" class="form-control mr-2" placeholder="Label value">
+                        <input type="text" name="options[${optionIndex}][values][0][extra_price]" class="form-control rupiah" placeholder="+ Harga">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-center">
+                        <button type="button" class="btn btn-sm btn-danger remove-option">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
         container.appendChild(div);
         optionIndex++;
 
