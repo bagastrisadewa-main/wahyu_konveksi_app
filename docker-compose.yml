@@ -9,7 +9,7 @@ services:
     ports:
       - "8025:80"
     volumes:
-      - ./wahyu_konveksi_app:/var/www/html   # ✅ folder Laravel yang baru
+      - ./wahyu_konveksi_app:/var/www/html # ✅ folder Laravel yang baru
     depends_on:
       - wahyu_konveksi_mysql
 
