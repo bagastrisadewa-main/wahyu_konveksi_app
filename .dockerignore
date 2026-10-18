@@ -1,0 +1,7 @@
+.git
+.gitignore
+wahyu_konveksi_app/vendor
+wahyu_konveksi_app/node_modules
+wahyu_konveksi_app/.env
+wahyu_konveksi_app/storage/*.key
+wahyu_konveksi_app/wahyu_konveksi_db.sql

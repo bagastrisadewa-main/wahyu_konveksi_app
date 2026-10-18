@@ -1,0 +1,42 @@
+services:
+  wahyu_konveksi_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wahyu_konveksi_app
+    ports:
+      - "8025:80"
+    volumes:
+      - ./wahyu_konveksi_app:/var/www/html # ✅ folder Laravel yang baru
+    depends_on:
+      - wahyu_konveksi_mysql
+
+  wahyu_konveksi_mysql:
+    image: mysql:8.0
+    container_name: wahyu_konveksi_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Wahyu_Konveksi1234
+      MYSQL_DATABASE: wahyu_konveksi_db
+      MYSQL_USER: wahyu_konveksi_app
+      MYSQL_PASSWORD: Wahyu_Konveksi1234
+    ports:
+      - "3302:3306"
+    volumes:
+      - wahyu_konveksi_mysql_data:/var/lib/mysql
+      - ./wahyu_konveksi_app/wahyu_konveksi_db.sql:/docker-entrypoint-initdb.d/wahyu_konveksi_db.sql
+
+  wahyu_konveksi_phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: wahyu_konveksi_phpmyadmin
+    restart: always
+    ports:
+      - "8089:80"
+    environment:
+      PMA_HOST: wahyu_konveksi_mysql
+      PMA_PORT: 3306
+    depends_on:
+      - wahyu_konveksi_mysql
+
+volumes:
+  wahyu_konveksi_mysql_data:
