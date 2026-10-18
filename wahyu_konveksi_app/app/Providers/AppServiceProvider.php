@@ -25,8 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (config('app.env') === 'production' || env('APP_ENV') === 'production' || isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
+        \Illuminate\Support\Facades\URL::forceScheme('https');
+        if (isset($this->app['request'])) {
+            $this->app['request']->server->set('HTTPS', 'on');
         }
 
         // Tetap gunakan Bootstrap 4 untuk pagination
