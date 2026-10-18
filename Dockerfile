@@ -29,10 +29,11 @@ COPY ./wahyu_konveksi_app /var/www/html
 # Install dependencies Laravel
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Ubah DocumentRoot Apache ke /public
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+# Ubah DocumentRoot Apache ke /public dan aktifkan AllowOverride All
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
+    && sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
-# Support port dinamis $PORT dari Render
+# Support port dinamis $PORT dari Render / Vercel
 ENV PORT=80
 RUN sed -i 's/Listen 80/Listen ${PORT}/g' /etc/apache2/ports.conf \
     && sed -i 's/:80/:${PORT}/g' /etc/apache2/sites-available/000-default.conf
@@ -43,6 +44,8 @@ RUN mkdir -p /var/www/html/storage/framework/cache/data \
              /var/www/html/storage/framework/views \
              /var/www/html/storage/logs \
              /var/www/html/bootstrap/cache \
+    && find /var/www/html -type d -exec chmod 755 {} + \
+    && find /var/www/html -type f -exec chmod 644 {} + \
     && chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
