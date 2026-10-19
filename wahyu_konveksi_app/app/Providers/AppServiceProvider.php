@@ -37,8 +37,8 @@ class AppServiceProvider extends ServiceProvider
 
         // 3️⃣ Pastikan request dianggap lewat HTTPS (untuk beberapa server yang
         //    tidak otomatis meng‑set header)
-        if (isset($this->app['request'])) {
-            $this->app['request']->server->set('HTTPS', 'on');
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
         }
 
         // Tetap gunakan Bootstrap 4 untuk pagination

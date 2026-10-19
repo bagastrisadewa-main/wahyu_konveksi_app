@@ -20,7 +20,9 @@ RUN a2enmod rewrite
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
-WORKDIR /var/www/html
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT ["docker-entrypoint.sh", "apache2-foreground"]
 
 # (Opsional) Copy project ke dalam container kalau tidak pakai volume
 # COPY ./wahyu-konveksi-backend /var/www/html

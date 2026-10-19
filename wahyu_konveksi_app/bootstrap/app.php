@@ -11,9 +11,14 @@
 |
 */
 
-$app = new Illuminate\Foundation\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
-);
+$app->withMiddleware(function ($kernel) {
+    // Trust all proxies (Vercel reverse proxy)
+    $kernel->pushMiddleware(Illuminate\Http\Middleware\TrustProxies::class);
+    // Set proxies to wildcard
+    if (method_exists($kernel, 'setProxies')) {
+        $kernel->setProxies(['*']);
+    }
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +45,8 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
+
+
 
 /*
 |--------------------------------------------------------------------------
