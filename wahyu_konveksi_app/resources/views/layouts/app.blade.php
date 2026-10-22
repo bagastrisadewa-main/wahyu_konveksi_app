@@ -34,7 +34,7 @@
 
 
 <meta http-equiv="Content-Security-Policy" 
-      content="frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; child-src https://www.youtube.com https://www.youtube-nocookie.com;">
+      content="upgrade-insecure-requests; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; child-src https://www.youtube.com https://www.youtube-nocookie.com;">
 
 
 </head>

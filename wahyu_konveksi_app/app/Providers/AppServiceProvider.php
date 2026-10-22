@@ -26,9 +26,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Paksa semua URL (asset(), url(), route()) memakai HTTPS di server.
+        // Paksa semua URL (asset(), url(), route()) memakai HTTPS di server / Vercel.
         // Di lokal (APP_ENV=local) tetap http agar development tidak terganggu.
-        if (! $this->app->environment('local')) {
+        if (! $this->app->environment('local') || request()->header('x-forwarded-proto') === 'https' || isset($_SERVER['VERCEL'])) {
             URL::forceScheme('https');
         }
 
