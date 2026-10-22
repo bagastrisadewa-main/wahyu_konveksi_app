@@ -5,14 +5,15 @@ set -e
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Create storage symlink for public files (Laravel storage:link)
+# Create storage symlink for public files
 php artisan storage:link || true
 
-# Clear and rebuild config cache so that new environment variables are read
+# Clear caches, then rebuild config so runtime environment variables are read
 php artisan config:clear
 php artisan view:clear
 php artisan route:clear
 php artisan config:cache
 
-# Run the original command (Apache in foreground)
-exec "$@"
+# Start Apache in foreground
+# (CMD di Dockerfile tidak membawa argumen, jadi "exec $@" tidak menjalankan apa-apa)
+exec apache2-foreground
