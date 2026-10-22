@@ -2,7 +2,7 @@
   "version": 2,
   "framework": null,
   "functions": {
-    "api/index.php": {
+    "api/*.php": {
       "runtime": "vercel-php@0.7.3"
     }
   },
@@ -10,6 +10,10 @@
     {
       "src": "/(assets_frontend|assets|css|js|library|img|storage|favicon.ico|fonts|images)(.*)",
       "dest": "/public/$1$2"
+    },
+    {
+      "src": "/api/test",
+      "dest": "/api/test.php"
     },
     {
       "src": "/(.*)",
